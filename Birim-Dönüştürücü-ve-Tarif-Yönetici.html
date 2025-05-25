@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mutfak Dönüştürücü</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>tailwind.config={theme:{extend:{colors:{primary:'#DF8820'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+from { transform: scale(0.95); opacity: 0; }
+to { transform: scale(1); opacity: 1; }
+}
+@keyframes slideIn {
+from { transform: translateX(-10px); opacity: 0; }
+to { transform: translateX(0); opacity: 1; }
+}
+body {
+font-family: 'Inter', sans-serif;
+transition: background-color 0.3s, color 0.3s;
+background-image: linear-gradient(to bottom right, rgba(223, 136, 32, 0.05), rgba(223, 136, 32, 0.02));
+}
+.card {
+backdrop-filter: blur(10px);
+background: rgba(255, 255, 255, 0.95);
+box-shadow: 0 4px 20px rgba(223, 136, 32, 0.08);
+border: 1px solid rgba(223, 136, 32, 0.15);
+animation: scaleIn 0.3s ease-out;
+position: relative;
+overflow: hidden;
+}
+.card::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 4px;
+background: linear-gradient(90deg, #DF8820, rgba(223, 136, 32, 0.3));
+}
+.card:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 30px rgba(223, 136, 32, 0.12);
+transition: all 0.3s ease;
+}
+.input-field {
+transition: all 0.3s ease;
+border: 2px solid transparent;
+background: rgba(255, 255, 255, 0.9);
+}
+.input-field:focus {
+outline: none;
+border-color: #DF8820;
+box-shadow: 0 0 0 3px rgba(223, 136, 32, 0.15);
+background: white;
+}
+.input-field:hover {
+background: white;
+border-color: rgba(223, 136, 32, 0.3);
+}
+.input-field::placeholder {
+color: rgba(107, 114, 128, 0.5);
+}
+.custom-select {
+appearance: none;
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+background-repeat: no-repeat;
+background-position: right 0.75rem center;
+background-size: 1rem;
+padding-right: 2.5rem;
+}
+.recipe-item {
+animation: slideIn 0.3s ease-out;
+transition: all 0.2s ease;
+background: white;
+border: 1px solid rgba(223, 136, 32, 0.2);
+}
+.recipe-item:hover {
+transform: translateX(4px);
+border-color: #DF8820;
+box-shadow: 0 2px 8px rgba(223, 136, 32, 0.1);
+}
+@media (max-width: 768px) {
+.container {
+padding-left: 1rem;
+padding-right: 1rem;
+}
+.card {
+margin-bottom: 1rem;
+}
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+input[type="number"] {
+-moz-appearance: textfield;
+}
+.result-display {
+position: relative;
+overflow: hidden;
+}
+.result-display::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: linear-gradient(45deg, transparent, rgba(223, 136, 32, 0.1), transparent);
+animation: shimmer 2s infinite;
+}
+@keyframes shimmer {
+0% { transform: translateX(-100%); }
+100% { transform: translateX(100%); }
+}
+button {
+position: relative;
+overflow: hidden;
+transition: all 0.3s ease;
+font-weight: 600;
+letter-spacing: 0.01em;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 0.5rem;
+}
+button::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
+opacity: 0;
+transition: opacity 0.3s ease;
+}
+button:hover::before {
+opacity: 1;
+}
+button i {
+transition: transform 0.3s ease;
+}
+button:hover i {
+transform: scale(1.1);
+}
+button.primary {
+background: linear-gradient(45deg, #DF8820, #E69635);
+color: white;
+text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+button.secondary {
+background: rgba(223, 136, 32, 0.1);
+color: #DF8820;
+}
+button.danger {
+background: rgba(239, 68, 68, 0.1);
+color: rgb(239, 68, 68);
+}
+.saved-recipe-card {
+transition: all 0.3s ease;
+}
+.saved-recipe-card:hover {
+transform: translateY(-4px);
+box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+<header class="flex justify-between items-center mb-8">
+<h1 class="text-3xl font-['Pacifico'] text-primary">Mutfak Asistanı</h1>
+</header>
+<main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Birim Dönüştürücü Bölümü -->
+<section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
+<h2 class="text-2xl font-semibold mb-6">Birim Dönüştürücü</h2>
+<div class="space-y-4">
+<div>
+<label for="ingredient" class="block text-sm font-medium mb-1">Malzeme</label>
+<select id="ingredient" class="input-field custom-select w-full px-4 py-2 border border-gray-300 rounded-button bg-white">
+<option value="un">Un</option>
+<option value="seker">Şeker</option>
+<option value="sut">Süt</option>
+<option value="siviyag">Sıvı Yağ</option>
+<option value="yogurt">Yoğurt</option>
+<option value="bal">Bal</option>
+<option value="tereyagi">Tereyağı</option>
+<option value="pirinc">Pirinç</option>
+<option value="su">Su</option>
+</select>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label for="amount" class="block text-sm font-medium mb-1">Miktar</label>
+<input type="number" id="amount" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button" placeholder="Örn: 150" min="0" step="any">
+</div>
+<div>
+<label for="sourceUnit" class="block text-sm font-medium mb-1">Kaynak Birim</label>
+<select id="sourceUnit" class="input-field custom-select w-full px-4 py-2 border border-gray-300 rounded-button bg-white">
+<option value="gram">Gram</option>
+<option value="ml">Mililitre</option>
+<option value="subardagi">Su Bardağı</option>
+<option value="cay">Çay Bardağı</option>
+<option value="yemek">Yemek Kaşığı</option>
+<option value="cay_kasigi">Çay Kaşığı</option>
+<option value="fincan">Türk Kahvesi Fincanı</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label for="targetUnit" class="block text-sm font-medium mb-1">Hedef Birim</label>
+<select id="targetUnit" class="input-field custom-select w-full px-4 py-2 border border-gray-300 rounded-button bg-white">
+<option value="gram">Gram</option>
+<option value="ml">Mililitre</option>
+<option value="subardagi">Su Bardağı</option>
+<option value="cay">Çay Bardağı</option>
+<option value="yemek">Yemek Kaşığı</option>
+<option value="cay_kasigi">Çay Kaşığı</option>
+<option value="fincan">Türk Kahvesi Fincanı</option>
+</select>
+</div>
+</div>
+<div class="mt-6">
+<div class="text-sm font-medium text-gray-500 mb-1">Sonuç</div>
+<div id="conversionResult" class="result-display p-4 bg-gray-100 border border-gray-200 rounded-lg text-xl font-semibold min-h-16 flex items-center justify-center">
+Dönüşüm sonucu burada görünecek
+</div>
+</div>
+</div>
+</section>
+<!-- Tarif Yöneticisi Bölümü -->
+<section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
+<h2 class="text-2xl font-semibold mb-6">Tarif Yöneticisi</h2>
+<div class="space-y-4">
+<div>
+<label for="recipeName" class="block text-sm font-medium mb-1">Tarif Adı</label>
+<input type="text" id="recipeName" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button" placeholder="Örn: Çikolatalı Kek">
+</div>
+<div>
+<label for="recipeDescription" class="block text-sm font-medium mb-1">Tarif Açıklaması</label>
+<textarea id="recipeDescription" rows="3" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button resize-none" placeholder="Tarifin kısa açıklaması..."></textarea>
+</div>
+<div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+<h3 class="text-lg font-medium mb-3">Malzeme Ekle</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+<div>
+<select id="recipeIngredient" class="input-field custom-select w-full px-3 py-2 text-sm border border-gray-300 rounded-button bg-white">
+<option value="un">Un</option>
+<option value="seker">Şeker</option>
+<option value="sut">Süt</option>
+<option value="siviyag">Sıvı Yağ</option>
+<option value="yogurt">Yoğurt</option>
+<option value="bal">Bal</option>
+<option value="tereyagi">Tereyağı</option>
+<option value="pirinc">Pirinç</option>
+<option value="su">Su</option>
+</select>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<input type="number" id="recipeAmount" class="input-field w-full px-3 py-2 text-sm border border-gray-300 rounded-button" placeholder="Miktar" min="0" step="any">
+<select id="recipeUnit" class="input-field custom-select w-full px-3 py-2 text-sm border border-gray-300 rounded-button bg-white">
+<option value="gram">Gram</option>
+<option value="ml">Mililitre</option>
+<option value="subardagi">Su Bardağı</option>
+<option value="cay">Çay Bardağı</option>
+<option value="yemek">Yemek Kaşığı</option>
+<option value="cay_kasigi">Çay Kaşığı</option>
+<option value="fincan">Türk Kahvesi Fincanı</option>
+</select>
+</div>
+</div>
+<button id="addIngredientBtn" class="primary mt-3 w-full py-3 px-4 rounded-button !rounded-button whitespace-nowrap">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-add-line"></i>
+</div>
+<span>Malzeme Ekle</span>
+</button>
+</div>
+<div>
+<h3 class="text-lg font-medium mb-3">Malzeme Listesi</h3>
+<div id="ingredientsList" class="space-y-2 max-h-60 overflow-y-auto">
+<div class="text-gray-500 text-center py-4 animate-pulse">Henüz malzeme eklenmedi</div>
+</div>
+</div>
+<button id="saveRecipeBtn" class="primary mt-4 w-full py-3 px-4 rounded-button !rounded-button whitespace-nowrap">
+<div class="w-5 h-5 flex items-center justify-center">
+<i class="ri-save-line"></i>
+</div>
+<span>Tarifi Kaydet</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Mutfak Araçları Bölümü -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+  <!-- Mutfak Zamanlayıcısı -->
+  <section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
+    <h2 class="text-2xl font-semibold mb-6">Mutfak Zamanlayıcısı</h2>
+    <div class="space-y-4">
+      <div class="grid grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Saat</label>
+          <input type="number" id="hours" min="0" max="23" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button" value="0">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Dakika</label>
+          <input type="number" id="minutes" min="0" max="59" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button" value="0">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Saniye</label>
+          <input type="number" id="seconds" min="0" max="59" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button" value="0">
+        </div>
+      </div>
+      <div class="text-center py-6">
+        <div id="timerDisplay" class="text-4xl font-bold mb-4">00:00:00</div>
+        <div class="flex gap-3 justify-center">
+          <button id="startTimer" class="primary px-6 py-2 rounded-button !rounded-button whitespace-nowrap">
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-play-line"></i>
+            </div>
+            <span>Başlat</span>
+          </button>
+          <button id="pauseTimer" class="secondary px-6 py-2 rounded-button !rounded-button whitespace-nowrap" disabled>
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-pause-line"></i>
+            </div>
+            <span>Duraklat</span>
+          </button>
+          <button id="resetTimer" class="danger px-6 py-2 rounded-button !rounded-button whitespace-nowrap" disabled>
+            <div class="w-5 h-5 flex items-center justify-center">
+              <i class="ri-restart-line"></i>
+            </div>
+            <span>Sıfırla</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Sıcaklık Dönüştürücü -->
+  <section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
+    <h2 class="text-2xl font-semibold mb-6">Sıcaklık Dönüştürücü</h2>
+    <div class="space-y-6">
+      <div>
+        <label class="block text-sm font-medium mb-1">Celsius (°C)</label>
+        <input type="number" id="celsius" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button" placeholder="Celsius değeri girin">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">Fahrenheit (°F)</label>
+        <input type="number" id="fahrenheit" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button" placeholder="Fahrenheit değeri girin">
+      </div>
+      <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+        <h3 class="text-lg font-medium mb-3">Yaygın Pişirme Sıcaklıkları</h3>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <div class="font-medium">Hafif Fırın</div>
+            <div class="text-gray-600">150°C / 300°F</div>
+          </div>
+          <div>
+            <div class="font-medium">Orta Fırın</div>
+            <div class="text-gray-600">180°C / 350°F</div>
+          </div>
+          <div>
+            <div class="font-medium">Sıcak Fırın</div>
+            <div class="text-gray-600">200°C / 400°F</div>
+          </div>
+          <div>
+            <div class="font-medium">Çok Sıcak Fırın</div>
+            <div class="text-gray-600">220°C / 425°F</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- Kaydedilen Tarifler Bölümü -->
+<section class="mt-8 bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
+<h2 class="text-2xl font-semibold mb-6">Kaydedilen Tarifler</h2>
+<div id="savedRecipes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="text-gray-500 text-center py-8 animate-pulse">Henüz kaydedilmiş tarif bulunmuyor</div>
+</div>
+</section>
+</div>
+<script id="conversionLogic">
+document.addEventListener('DOMContentLoaded', function() {
+// Malzeme yoğunluk verileri (g/ml)
+const densityData = {
+un: 0.593,      // Buğday unu yoğunluğu (g/ml)
+seker: 0.845,   // Toz şeker yoğunluğu
+sut: 1.033,     // Tam yağlı süt yoğunluğu
+siviyag: 0.918, // Ayçiçek yağı yoğunluğu
+yogurt: 1.045,  // Tam yağlı yoğurt yoğunluğu
+bal: 1.425,     // Saf bal yoğunluğu (20°C)
+tereyagi: 0.911,// Tereyağı yoğunluğu (oda sıcaklığı)
+pirinc: 0.873,  // Pirinç yoğunluğu
+su: 0.998       // Su yoğunluğu (20°C)
+};
+// Birim dönüşüm verileri (birim başına ml)
+const unitConversions = {
+gram: 1,           // referans birim
+ml: 1,            // baz hacim birimi
+subardagi: 240,   // Standart su bardağı
+cay: 125,         // Standart çay bardağı
+yemek: 14.8,      // Standart yemek kaşığı
+cay_kasigi: 4.93, // Standart çay kaşığı
+fincan: 60        // Standart Türk kahvesi fincanı
+};
+// Birim dönüştürücü elementleri
+const ingredientSelect = document.getElementById('ingredient');
+const amountInput = document.getElementById('amount');
+const sourceUnitSelect = document.getElementById('sourceUnit');
+const targetUnitSelect = document.getElementById('targetUnit');
+const conversionResult = document.getElementById('conversionResult');
+// Birim dönüşümü hesaplama fonksiyonu
+function calculateConversion() {
+const ingredient = ingredientSelect.value;
+const amount = parseFloat(amountInput.value);
+const sourceUnit = sourceUnitSelect.value;
+const targetUnit = targetUnitSelect.value;
+if (isNaN(amount) || amount <= 0) {
+conversionResult.textContent = 'Lütfen geçerli bir miktar girin';
+return;
+}
+// Malzemenin yoğunluğunu al
+const density = densityData[ingredient];
+// Kaynak birimi ml'ye dönüştür
+let mlValue;
+if (sourceUnit === 'gram') {
+mlValue = amount / density;
+} else {
+mlValue = amount * unitConversions[sourceUnit];
+}
+// ml'yi hedef birime dönüştür
+let result;
+if (targetUnit === 'gram') {
+result = mlValue * density;
+} else {
+result = mlValue / unitConversions[targetUnit];
+}
+// Sonucu formatla (en fazla 2 ondalık basamak)
+result = Math.round(result * 100) / 100;
+// Birim adlarını daha okunabilir hale getir
+const unitNames = {
+gram: 'gram',
+ml: 'mililitre',
+subardagi: 'su bardağı',
+cay: 'çay bardağı',
+yemek: 'yemek kaşığı',
+cay_kasigi: 'çay kaşığı',
+fincan: 'Türk kahvesi fincanı'
+};
+const ingredientNames = {
+un: 'un',
+seker: 'şeker',
+sut: 'süt',
+siviyag: 'sıvı yağ',
+yogurt: 'yoğurt',
+bal: 'bal',
+tereyagi: 'tereyağı',
+pirinc: 'pirinç',
+su: 'su'
+};
+conversionResult.textContent = `${amount} ${unitNames[sourceUnit]} ${ingredientNames[ingredient]} = ${result} ${unitNames[targetUnit]}`;
+}
+// Birim dönüştürücü event listener'ları
+ingredientSelect.addEventListener('change', calculateConversion);
+amountInput.addEventListener('input', calculateConversion);
+sourceUnitSelect.addEventListener('change', calculateConversion);
+targetUnitSelect.addEventListener('change', calculateConversion);
+});
+</script>
+<script id="recipeManager">
+document.addEventListener('DOMContentLoaded', function() {
+// Tarif yöneticisi elementleri
+const recipeNameInput = document.getElementById('recipeName');
+const recipeDescriptionInput = document.getElementById('recipeDescription');
+const recipeIngredientSelect = document.getElementById('recipeIngredient');
+const recipeAmountInput = document.getElementById('recipeAmount');
+const recipeUnitSelect = document.getElementById('recipeUnit');
+const addIngredientBtn = document.getElementById('addIngredientBtn');
+const ingredientsList = document.getElementById('ingredientsList');
+const saveRecipeBtn = document.getElementById('saveRecipeBtn');
+const savedRecipesContainer = document.getElementById('savedRecipes');
+// Malzeme yoğunluk verileri (g/ml) - conversionLogic script'inden
+const densityData = {
+un: 0.5,
+seker: 0.85,
+sut: 1.03,
+siviyag: 0.92,
+yogurt: 1.03,
+bal: 1.42,
+tereyagi: 0.96,
+pirinc: 0.85,
+su: 1
+};
+// Birim dönüşüm verileri (birim başına ml) - conversionLogic script'inden
+const unitConversions = {
+gram: 1,
+ml: 1,
+subardagi: 200,
+cay: 100,
+yemek: 15,
+cay_kasigi: 5,
+fincan: 50
+};
+// Birim ve malzeme adları
+const unitNames = {
+gram: 'gram',
+ml: 'mililitre',
+subardagi: 'su bardağı (240ml)',
+cay: 'çay bardağı (125ml)',
+yemek: 'yemek kaşığı (14.8ml)',
+cay_kasigi: 'çay kaşığı (4.93ml)',
+fincan: 'Türk kahvesi fincanı (60ml)'
+};
+const ingredientNames = {
+un: 'buğday unu',
+seker: 'toz şeker',
+sut: 'tam yağlı süt',
+siviyag: 'ayçiçek yağı',
+yogurt: 'tam yağlı yoğurt',
+bal: 'bal (20°C)',
+tereyagi: 'tereyağı (oda sıcaklığı)',
+pirinc: 'pirinç',
+su: 'su (20°C)'
+};
+// Geçici malzeme listesi
+let currentIngredients = [];
+// Malzeme ekleme fonksiyonu
+function addIngredient() {
+const ingredient = recipeIngredientSelect.value;
+const amount = parseFloat(recipeAmountInput.value);
+const unit = recipeUnitSelect.value;
+if (isNaN(amount) || amount <= 0) {
+alert('Lütfen geçerli bir miktar girin');
+return;
+}
+// Standart birime dönüşümü hesapla (gram veya ml)
+const density = densityData[ingredient];
+let standardValue;
+let standardUnit;
+if (['un', 'seker', 'pirinc'].includes(ingredient)) {
+// Katı malzemeler için gram
+if (unit === 'gram') {
+standardValue = amount;
+} else {
+standardValue = (amount * unitConversions[unit]) * density;
+}
+standardUnit = 'gram';
+} else {
+// Sıvı malzemeler için ml
+if (unit === 'ml') {
+standardValue = amount;
+} else if (unit === 'gram') {
+standardValue = amount / density;
+} else {
+standardValue = amount * unitConversions[unit];
+}
+standardUnit = 'ml';
+}
+// Sonucu formatla (en fazla 2 ondalık basamak)
+standardValue = Math.round(standardValue * 100) / 100;
+// Malzemeyi listeye ekle
+const newIngredient = {
+id: Date.now(),
+name: ingredient,
+amount: amount,
+unit: unit,
+standardValue: standardValue,
+standardUnit: standardUnit
+};
+currentIngredients.push(newIngredient);
+// Malzeme listesini güncelle
+updateIngredientsList();
+// Form alanlarını temizle
+recipeAmountInput.value = '';
+recipeAmountInput.focus();
+}
+// Malzeme listesini güncelleme fonksiyonu
+function updateIngredientsList() {
+if (currentIngredients.length === 0) {
+ingredientsList.innerHTML = '<div class="text-gray-500 text-center py-4 animate-pulse">Henüz malzeme eklenmedi</div>';
+return;
+}
+ingredientsList.innerHTML = '';
+currentIngredients.forEach(item => {
+const ingredientEl = document.createElement('div');
+ingredientEl.className = 'recipe-item flex justify-between items-center p-3 bg-gray-50 border border-gray-200 rounded-lg';
+ingredientEl.innerHTML = `
+<div>
+<div class="font-medium">${ingredientNames[item.name]}</div>
+<div class="text-sm text-gray-600">
+${item.amount} ${unitNames[item.unit]}
+<span class="text-gray-500">(≈ ${item.standardValue} ${item.standardUnit})</span>
+</div>
+</div>
+<div class="flex space-x-2">
+<button class="secondary edit-btn p-2 rounded-full !rounded-full whitespace-nowrap">
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-pencil-line"></i>
+</div>
+</button>
+<button class="danger delete-btn p-2 rounded-full !rounded-full whitespace-nowrap">
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-delete-bin-line"></i>
+</div>
+</button>
+</div>
+`;
+// Silme butonu event listener'ı
+const deleteBtn = ingredientEl.querySelector('.delete-btn');
+deleteBtn.addEventListener('click', () => {
+currentIngredients = currentIngredients.filter(i => i.id !== item.id);
+updateIngredientsList();
+});
+// Düzenleme butonu event listener'ı
+const editBtn = ingredientEl.querySelector('.edit-btn');
+editBtn.addEventListener('click', () => {
+recipeIngredientSelect.value = item.name;
+recipeAmountInput.value = item.amount;
+recipeUnitSelect.value = item.unit;
+// Malzemeyi listeden kaldır
+currentIngredients = currentIngredients.filter(i => i.id !== item.id);
+updateIngredientsList();
+});
+ingredientsList.appendChild(ingredientEl);
+});
+}
+// Tarif kaydetme fonksiyonu
+function saveRecipe() {
+const name = recipeNameInput.value.trim();
+const description = recipeDescriptionInput.value.trim();
+if (name === '') {
+alert('Lütfen tarif adı girin');
+return;
+}
+if (currentIngredients.length === 0) {
+alert('Lütfen en az bir malzeme ekleyin');
+return;
+}
+// Yeni tarif oluştur
+const newRecipe = {
+id: Date.now(),
+name: name,
+description: description,
+ingredients: [...currentIngredients],
+date: new Date().toLocaleDateString('tr-TR')
+};
+// Mevcut tarifleri localStorage'dan al
+let savedRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+// Yeni tarifi ekle
+savedRecipes.push(newRecipe);
+// localStorage'a kaydet
+localStorage.setItem('recipes', JSON.stringify(savedRecipes));
+// Tarif listesini güncelle
+loadSavedRecipes();
+// Formu temizle
+recipeNameInput.value = '';
+recipeDescriptionInput.value = '';
+currentIngredients = [];
+updateIngredientsList();
+alert('Tarif başarıyla kaydedildi!');
+}
+// Kaydedilmiş tarifleri yükleme fonksiyonu
+function loadSavedRecipes() {
+const savedRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+if (savedRecipes.length === 0) {
+savedRecipesContainer.innerHTML = '<div class="text-gray-500 text-center py-8 animate-pulse">Henüz kaydedilmiş tarif bulunmuyor</div>';
+return;
+}
+savedRecipesContainer.innerHTML = '';
+savedRecipes.forEach(recipe => {
+const recipeCard = document.createElement('div');
+recipeCard.className = 'bg-gray-50 rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow';
+let ingredientsHtml = '';
+recipe.ingredients.forEach(ing => {
+ingredientsHtml += `
+<li class="text-sm">
+${ing.amount} ${unitNames[ing.unit]} ${ingredientNames[ing.name]}
+<span class="text-gray-500">(≈ ${ing.standardValue} ${ing.standardUnit})</span>
+</li>
+`;
+});
+recipeCard.innerHTML = `
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-lg font-medium">${recipe.name}</h3>
+<button class="danger delete-recipe-btn p-1.5 rounded-full !rounded-full whitespace-nowrap">
+<div class="w-4 h-4 flex items-center justify-center">
+<i class="ri-delete-bin-line"></i>
+</div>
+</button>
+</div>
+<p class="text-gray-600 text-sm mb-3">${recipe.description || 'Açıklama yok'}</p>
+<div class="text-xs text-gray-500 mb-2">Eklenme: ${recipe.date}</div>
+<div class="border-t border-gray-200 pt-2 mt-2">
+<h4 class="text-sm font-medium mb-1">Malzemeler:</h4>
+<ul class="list-disc list-inside space-y-1">
+${ingredientsHtml}
+</ul>
+</div>
+`;
+// Tarif silme butonu event listener'ı
+const deleteBtn = recipeCard.querySelector('.delete-recipe-btn');
+deleteBtn.addEventListener('click', () => {
+if (confirm('Bu tarifi silmek istediğinizden emin misiniz?')) {
+const updatedRecipes = savedRecipes.filter(r => r.id !== recipe.id);
+localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
+loadSavedRecipes();
+}
+});
+savedRecipesContainer.appendChild(recipeCard);
+});
+}
+// Event listener'lar
+addIngredientBtn.addEventListener('click', addIngredient);
+saveRecipeBtn.addEventListener('click', saveRecipe);
+// Sayfa yüklendiğinde kaydedilmiş tarifleri yükle
+loadSavedRecipes();
+});
+</script>
+<script id="timerLogic">
+document.addEventListener('DOMContentLoaded', function() {
+  const hoursInput = document.getElementById('hours');
+  const minutesInput = document.getElementById('minutes');
+  const secondsInput = document.getElementById('seconds');
+  const timerDisplay = document.getElementById('timerDisplay');
+  const startButton = document.getElementById('startTimer');
+  const pauseButton = document.getElementById('pauseTimer');
+  const resetButton = document.getElementById('resetTimer');
+  let timeLeft = 0;
+  let timerId = null;
+  let originalTime = 0;
+  function updateDisplay(time) {
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = time % 60;
+    timerDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+  function updateButtons(running) {
+    startButton.disabled = running;
+    pauseButton.disabled = !running;
+    resetButton.disabled = !running && timeLeft === originalTime;
+  }
+  startButton.addEventListener('click', function() {
+    const hours = parseInt(hoursInput.value) || 0;
+    const minutes = parseInt(minutesInput.value) || 0;
+    const seconds = parseInt(secondsInput.value) || 0;
+    
+    timeLeft = hours * 3600 + minutes * 60 + seconds;
+    originalTime = timeLeft;
+    
+    if (timeLeft <= 0) return;
+    timerId = setInterval(() => {
+      timeLeft--;
+      updateDisplay(timeLeft);
+      
+      if (timeLeft <= 0) {
+        clearInterval(timerId);
+        updateButtons(false);
+        const notification = new Notification('Zamanlayıcı', {
+          body: 'Süre doldu!',
+          icon: 'https://example.com/icon.png'
+        });
+      }
+    }, 1000);
+    updateButtons(true);
+  });
+  pauseButton.addEventListener('click', function() {
+    clearInterval(timerId);
+    updateButtons(false);
+  });
+  resetButton.addEventListener('click', function() {
+    clearInterval(timerId);
+    timeLeft = originalTime;
+    updateDisplay(timeLeft);
+    updateButtons(false);
+  });
+  // Initial display
+  updateDisplay(0);
+  updateButtons(false);
+});
+</script>
+<script id="temperatureConverter">
+document.addEventListener('DOMContentLoaded', function() {
+  const celsiusInput = document.getElementById('celsius');
+  const fahrenheitInput = document.getElementById('fahrenheit');
+  celsiusInput.addEventListener('input', function() {
+    const celsius = parseFloat(this.value);
+    if (!isNaN(celsius)) {
+      const fahrenheit = (celsius * 9/5) + 32;
+      fahrenheitInput.value = Math.round(fahrenheit * 10) / 10;
+    } else {
+      fahrenheitInput.value = '';
+    }
+  });
+  fahrenheitInput.addEventListener('input', function() {
+    const fahrenheit = parseFloat(this.value);
+    if (!isNaN(fahrenheit)) {
+      const celsius = (fahrenheit - 32) * 5/9;
+      celsiusInput.value = Math.round(celsius * 10) / 10;
+    } else {
+      celsiusInput.value = '';
+    }
+  });
+});
+</script>
+</body>
+</html>
