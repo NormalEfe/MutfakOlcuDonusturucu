@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mutfak Dönüştürücü</title>
+<title>Mutfak Asistanı & Dönüştürücü</title>
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
 <script>tailwind.config={theme:{extend:{colors:{primary:'#DF8820'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -175,6 +175,15 @@ transition: all 0.3s ease;
 transform: translateY(-4px);
 box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
+.custom-unit-badge {
+    background: #FFF4E5;
+    color: #DF8820;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 6px;
+    border: 1px solid rgba(223, 136, 32, 0.2);
+}
 </style>
 </head>
 <body class="bg-gray-50 text-gray-900 min-h-screen">
@@ -183,7 +192,34 @@ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 <h1 class="text-3xl font-['Pacifico'] text-primary">Mutfak Asistanı</h1>
 </header>
 <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-<!-- Birim Dönüştürücü Bölümü -->
+<section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card lg:col-span-2">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold">Özel Kaplarım</h2>
+        <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Kendi ölçülerini ekle</span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 items-end">
+        <div>
+            <label for="customUnitName" class="block text-sm font-medium mb-1">Kap Adı</label>
+            <input type="text" id="customUnitName" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button" placeholder="Örn: Mavi Kupa, Babaannemin Kaşığı">
+        </div>
+        <div>
+            <label for="customUnitVolume" class="block text-sm font-medium mb-1">Hacim (ml)</label>
+            <input type="number" id="customUnitVolume" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button" placeholder="Örn: 300" min="1">
+            <p class="text-xs text-gray-500 mt-1">Kabınızı suyla doldurup kaç ml geldiğini yazın.</p>
+        </div>
+        <div>
+            <button id="addCustomUnitBtn" class="primary w-full py-2.5 rounded-button whitespace-nowrap">
+                <div class="w-5 h-5 flex items-center justify-center">
+                    <i class="ri-add-circle-line"></i>
+                </div>
+                <span>Özel Kap Ekle</span>
+            </button>
+        </div>
+    </div>
+    <div id="customUnitsList" class="flex flex-wrap gap-3">
+        </div>
+</section>
+
 <section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
 <h2 class="text-2xl font-semibold mb-6">Birim Dönüştürücü</h2>
 <div class="space-y-4">
@@ -209,28 +245,14 @@ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 <div>
 <label for="sourceUnit" class="block text-sm font-medium mb-1">Kaynak Birim</label>
 <select id="sourceUnit" class="input-field custom-select w-full px-4 py-2 border border-gray-300 rounded-button bg-white">
-<option value="gram">Gram</option>
-<option value="ml">Mililitre</option>
-<option value="subardagi">Su Bardağı</option>
-<option value="cay">Çay Bardağı</option>
-<option value="yemek">Yemek Kaşığı</option>
-<option value="cay_kasigi">Çay Kaşığı</option>
-<option value="fincan">Türk Kahvesi Fincanı</option>
-</select>
+    </select>
 </div>
 </div>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 <div>
 <label for="targetUnit" class="block text-sm font-medium mb-1">Hedef Birim</label>
 <select id="targetUnit" class="input-field custom-select w-full px-4 py-2 border border-gray-300 rounded-button bg-white">
-<option value="gram">Gram</option>
-<option value="ml">Mililitre</option>
-<option value="subardagi">Su Bardağı</option>
-<option value="cay">Çay Bardağı</option>
-<option value="yemek">Yemek Kaşığı</option>
-<option value="cay_kasigi">Çay Kaşığı</option>
-<option value="fincan">Türk Kahvesi Fincanı</option>
-</select>
+    </select>
 </div>
 </div>
 <div class="mt-6">
@@ -241,7 +263,6 @@ Dönüşüm sonucu burada görünecek
 </div>
 </div>
 </section>
-<!-- Tarif Yöneticisi Bölümü -->
 <section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
 <h2 class="text-2xl font-semibold mb-6">Tarif Yöneticisi</h2>
 <div class="space-y-4">
@@ -272,14 +293,7 @@ Dönüşüm sonucu burada görünecek
 <div class="grid grid-cols-2 gap-2">
 <input type="number" id="recipeAmount" class="input-field w-full px-3 py-2 text-sm border border-gray-300 rounded-button" placeholder="Miktar" min="0" step="any">
 <select id="recipeUnit" class="input-field custom-select w-full px-3 py-2 text-sm border border-gray-300 rounded-button bg-white">
-<option value="gram">Gram</option>
-<option value="ml">Mililitre</option>
-<option value="subardagi">Su Bardağı</option>
-<option value="cay">Çay Bardağı</option>
-<option value="yemek">Yemek Kaşığı</option>
-<option value="cay_kasigi">Çay Kaşığı</option>
-<option value="fincan">Türk Kahvesi Fincanı</option>
-</select>
+    </select>
 </div>
 </div>
 <button id="addIngredientBtn" class="primary mt-3 w-full py-3 px-4 rounded-button !rounded-button whitespace-nowrap">
@@ -304,9 +318,7 @@ Dönüşüm sonucu burada görünecek
 </div>
 </section>
 </main>
-<!-- Mutfak Araçları Bölümü -->
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-  <!-- Mutfak Zamanlayıcısı -->
   <section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
     <h2 class="text-2xl font-semibold mb-6">Mutfak Zamanlayıcısı</h2>
     <div class="space-y-4">
@@ -349,7 +361,6 @@ Dönüşüm sonucu burada görünecek
       </div>
     </div>
   </section>
-  <!-- Sıcaklık Dönüştürücü -->
   <section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
     <h2 class="text-2xl font-semibold mb-6">Sıcaklık Dönüştürücü</h2>
     <div class="space-y-6">
@@ -385,7 +396,6 @@ Dönüşüm sonucu burada görünecek
     </div>
   </section>
 </div>
-<!-- Kaydedilen Tarifler Bölümü -->
 <section class="mt-8 bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
 <h2 class="text-2xl font-semibold mb-6">Kaydedilen Tarifler</h2>
 <div id="savedRecipes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -393,343 +403,379 @@ Dönüşüm sonucu burada görünecek
 </div>
 </section>
 </div>
+
+<script id="globalData">
+// Global veriler ve yardımcı fonksiyonlar
+const densityData = {
+    un: 0.593, seker: 0.845, sut: 1.033, siviyag: 0.918,
+    yogurt: 1.045, bal: 1.425, tereyagi: 0.911, pirinc: 0.873, su: 0.998
+};
+
+const standardUnits = {
+    gram: { ml: 1, label: 'Gram' }, // Gram özel durum
+    ml: { ml: 1, label: 'Mililitre' },
+    subardagi: { ml: 240, label: 'Su Bardağı (240ml)' },
+    cay: { ml: 125, label: 'Çay Bardağı (125ml)' },
+    yemek: { ml: 14.8, label: 'Yemek Kaşığı (15ml)' },
+    cay_kasigi: { ml: 4.93, label: 'Çay Kaşığı (5ml)' },
+    fincan: { ml: 60, label: 'Türk Kahvesi Fincanı' }
+};
+
+const ingredientNames = {
+    un: 'un', seker: 'şeker', sut: 'süt', siviyag: 'sıvı yağ',
+    yogurt: 'yoğurt', bal: 'bal', tereyagi: 'tereyağı', pirinc: 'pirinç', su: 'su'
+};
+
+// Tüm birimleri (standart + özel) getiren fonksiyon
+function getAllUnits() {
+    const customUnits = JSON.parse(localStorage.getItem('customUnits') || '{}');
+    return { ...standardUnits, ...customUnits };
+}
+
+// Select kutularını dolduran yardımcı fonksiyon
+function populateUnitSelects() {
+    const units = getAllUnits();
+    const selects = ['sourceUnit', 'targetUnit', 'recipeUnit'];
+    
+    selects.forEach(id => {
+        const select = document.getElementById(id);
+        if(!select) return;
+        
+        const currentValue = select.value;
+        select.innerHTML = '';
+        
+        // Önce standart birimleri ekle
+        Object.entries(standardUnits).forEach(([key, val]) => {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = val.label;
+            select.appendChild(option);
+        });
+
+        // Varsa özel birimleri ekle (Grup ayıracı ile)
+        const customKeys = Object.keys(JSON.parse(localStorage.getItem('customUnits') || '{}'));
+        if (customKeys.length > 0) {
+            const separator = document.createElement('option');
+            separator.disabled = true;
+            separator.textContent = '── Özel Kaplarınız ──';
+            select.appendChild(separator);
+
+            customKeys.forEach(key => {
+                const val = units[key];
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = `${val.label} (${val.ml}ml)`;
+                select.appendChild(option);
+            });
+        }
+        
+        // Eski seçim duruyorsa koru, yoksa varsayılana dön
+        if (units[currentValue]) {
+            select.value = currentValue;
+        } else {
+            select.value = 'gram';
+        }
+    });
+}
+</script>
+
+<script id="customUnitManager">
+document.addEventListener('DOMContentLoaded', function() {
+    const nameInput = document.getElementById('customUnitName');
+    const volumeInput = document.getElementById('customUnitVolume');
+    const addBtn = document.getElementById('addCustomUnitBtn');
+    const listContainer = document.getElementById('customUnitsList');
+
+    function loadCustomUnits() {
+        const customUnits = JSON.parse(localStorage.getItem('customUnits') || '{}');
+        listContainer.innerHTML = '';
+
+        if (Object.keys(customUnits).length === 0) {
+            listContainer.innerHTML = '<span class="text-sm text-gray-400 italic">Henüz özel kap eklenmedi.</span>';
+        }
+
+        Object.entries(customUnits).forEach(([key, data]) => {
+            const badge = document.createElement('div');
+            badge.className = 'flex items-center gap-2 bg-orange-50 border border-orange-200 text-orange-800 px-3 py-1.5 rounded-full text-sm shadow-sm';
+            badge.innerHTML = `
+                <i class="ri-cup-line"></i>
+                <span class="font-medium">${data.label}</span>
+                <span class="text-orange-600 text-xs">(${data.ml} ml)</span>
+                <button class="delete-custom-unit ml-1 hover:text-red-500 transition-colors" data-key="${key}">
+                    <i class="ri-close-circle-fill"></i>
+                </button>
+            `;
+            listContainer.appendChild(badge);
+        });
+
+        // Silme butonlarına event ata
+        document.querySelectorAll('.delete-custom-unit').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const key = this.dataset.key;
+                const units = JSON.parse(localStorage.getItem('customUnits') || '{}');
+                delete units[key];
+                localStorage.setItem('customUnits', JSON.stringify(units));
+                loadCustomUnits();
+                populateUnitSelects(); // Dropdownları güncelle
+            });
+        });
+    }
+
+    addBtn.addEventListener('click', function() {
+        const name = nameInput.value.trim();
+        const volume = parseFloat(volumeInput.value);
+
+        if (!name) { alert('Lütfen bir kap adı girin.'); return; }
+        if (!volume || volume <= 0) { alert('Lütfen geçerli bir hacim (ml) girin.'); return; }
+
+        const key = 'custom_' + Date.now();
+        const units = JSON.parse(localStorage.getItem('customUnits') || '{}');
+        
+        units[key] = {
+            label: name,
+            ml: volume
+        };
+
+        localStorage.setItem('customUnits', JSON.stringify(units));
+        
+        nameInput.value = '';
+        volumeInput.value = '';
+        
+        loadCustomUnits();
+        populateUnitSelects(); // Dropdownları güncelle
+        alert('Özel kap başarıyla eklendi!');
+    });
+
+    // Başlangıç yüklemeleri
+    loadCustomUnits();
+    populateUnitSelects();
+});
+</script>
+
 <script id="conversionLogic">
 document.addEventListener('DOMContentLoaded', function() {
-// Malzeme yoğunluk verileri (g/ml)
-const densityData = {
-un: 0.593,      // Buğday unu yoğunluğu (g/ml)
-seker: 0.845,   // Toz şeker yoğunluğu
-sut: 1.033,     // Tam yağlı süt yoğunluğu
-siviyag: 0.918, // Ayçiçek yağı yoğunluğu
-yogurt: 1.045,  // Tam yağlı yoğurt yoğunluğu
-bal: 1.425,     // Saf bal yoğunluğu (20°C)
-tereyagi: 0.911,// Tereyağı yoğunluğu (oda sıcaklığı)
-pirinc: 0.873,  // Pirinç yoğunluğu
-su: 0.998       // Su yoğunluğu (20°C)
-};
-// Birim dönüşüm verileri (birim başına ml)
-const unitConversions = {
-gram: 1,           // referans birim
-ml: 1,            // baz hacim birimi
-subardagi: 240,   // Standart su bardağı
-cay: 125,         // Standart çay bardağı
-yemek: 14.8,      // Standart yemek kaşığı
-cay_kasigi: 4.93, // Standart çay kaşığı
-fincan: 60        // Standart Türk kahvesi fincanı
-};
-// Birim dönüştürücü elementleri
-const ingredientSelect = document.getElementById('ingredient');
-const amountInput = document.getElementById('amount');
-const sourceUnitSelect = document.getElementById('sourceUnit');
-const targetUnitSelect = document.getElementById('targetUnit');
-const conversionResult = document.getElementById('conversionResult');
-// Birim dönüşümü hesaplama fonksiyonu
-function calculateConversion() {
-const ingredient = ingredientSelect.value;
-const amount = parseFloat(amountInput.value);
-const sourceUnit = sourceUnitSelect.value;
-const targetUnit = targetUnitSelect.value;
-if (isNaN(amount) || amount <= 0) {
-conversionResult.textContent = 'Lütfen geçerli bir miktar girin';
-return;
-}
-// Malzemenin yoğunluğunu al
-const density = densityData[ingredient];
-// Kaynak birimi ml'ye dönüştür
-let mlValue;
-if (sourceUnit === 'gram') {
-mlValue = amount / density;
-} else {
-mlValue = amount * unitConversions[sourceUnit];
-}
-// ml'yi hedef birime dönüştür
-let result;
-if (targetUnit === 'gram') {
-result = mlValue * density;
-} else {
-result = mlValue / unitConversions[targetUnit];
-}
-// Sonucu formatla (en fazla 2 ondalık basamak)
-result = Math.round(result * 100) / 100;
-// Birim adlarını daha okunabilir hale getir
-const unitNames = {
-gram: 'gram',
-ml: 'mililitre',
-subardagi: 'su bardağı',
-cay: 'çay bardağı',
-yemek: 'yemek kaşığı',
-cay_kasigi: 'çay kaşığı',
-fincan: 'Türk kahvesi fincanı'
-};
-const ingredientNames = {
-un: 'un',
-seker: 'şeker',
-sut: 'süt',
-siviyag: 'sıvı yağ',
-yogurt: 'yoğurt',
-bal: 'bal',
-tereyagi: 'tereyağı',
-pirinc: 'pirinç',
-su: 'su'
-};
-conversionResult.textContent = `${amount} ${unitNames[sourceUnit]} ${ingredientNames[ingredient]} = ${result} ${unitNames[targetUnit]}`;
-}
-// Birim dönüştürücü event listener'ları
-ingredientSelect.addEventListener('change', calculateConversion);
-amountInput.addEventListener('input', calculateConversion);
-sourceUnitSelect.addEventListener('change', calculateConversion);
-targetUnitSelect.addEventListener('change', calculateConversion);
+    const ingredientSelect = document.getElementById('ingredient');
+    const amountInput = document.getElementById('amount');
+    const sourceUnitSelect = document.getElementById('sourceUnit');
+    const targetUnitSelect = document.getElementById('targetUnit');
+    const conversionResult = document.getElementById('conversionResult');
+
+    function calculateConversion() {
+        const ingredient = ingredientSelect.value;
+        const amount = parseFloat(amountInput.value);
+        const sourceUnit = sourceUnitSelect.value;
+        const targetUnit = targetUnitSelect.value;
+        const allUnits = getAllUnits();
+
+        if (isNaN(amount) || amount <= 0) {
+            conversionResult.textContent = 'Lütfen geçerli bir miktar girin';
+            return;
+        }
+
+        const density = densityData[ingredient];
+
+        // Kaynak birimi ml'ye dönüştür (gram değilse)
+        let mlValue;
+        if (sourceUnit === 'gram') {
+            mlValue = amount / density;
+        } else {
+            // Özel veya standart birim hacmi
+            mlValue = amount * allUnits[sourceUnit].ml;
+        }
+
+        // ml'yi hedef birime dönüştür
+        let result;
+        if (targetUnit === 'gram') {
+            result = mlValue * density;
+        } else {
+            result = mlValue / allUnits[targetUnit].ml;
+        }
+
+        result = Math.round(result * 100) / 100;
+        
+        const sourceLabel = allUnits[sourceUnit]?.label || sourceUnit;
+        const targetLabel = allUnits[targetUnit]?.label || targetUnit;
+
+        conversionResult.textContent = `${amount} ${sourceLabel} ${ingredientNames[ingredient]} = ${result} ${targetLabel}`;
+    }
+
+    // Event listeners
+    [ingredientSelect, amountInput, sourceUnitSelect, targetUnitSelect].forEach(el => {
+        el.addEventListener('change', calculateConversion);
+        el.addEventListener('input', calculateConversion);
+    });
 });
 </script>
+
 <script id="recipeManager">
 document.addEventListener('DOMContentLoaded', function() {
-// Tarif yöneticisi elementleri
-const recipeNameInput = document.getElementById('recipeName');
-const recipeDescriptionInput = document.getElementById('recipeDescription');
-const recipeIngredientSelect = document.getElementById('recipeIngredient');
-const recipeAmountInput = document.getElementById('recipeAmount');
-const recipeUnitSelect = document.getElementById('recipeUnit');
-const addIngredientBtn = document.getElementById('addIngredientBtn');
-const ingredientsList = document.getElementById('ingredientsList');
-const saveRecipeBtn = document.getElementById('saveRecipeBtn');
-const savedRecipesContainer = document.getElementById('savedRecipes');
-// Malzeme yoğunluk verileri (g/ml) - conversionLogic script'inden
-const densityData = {
-un: 0.5,
-seker: 0.85,
-sut: 1.03,
-siviyag: 0.92,
-yogurt: 1.03,
-bal: 1.42,
-tereyagi: 0.96,
-pirinc: 0.85,
-su: 1
-};
-// Birim dönüşüm verileri (birim başına ml) - conversionLogic script'inden
-const unitConversions = {
-gram: 1,
-ml: 1,
-subardagi: 200,
-cay: 100,
-yemek: 15,
-cay_kasigi: 5,
-fincan: 50
-};
-// Birim ve malzeme adları
-const unitNames = {
-gram: 'gram',
-ml: 'mililitre',
-subardagi: 'su bardağı (240ml)',
-cay: 'çay bardağı (125ml)',
-yemek: 'yemek kaşığı (14.8ml)',
-cay_kasigi: 'çay kaşığı (4.93ml)',
-fincan: 'Türk kahvesi fincanı (60ml)'
-};
-const ingredientNames = {
-un: 'buğday unu',
-seker: 'toz şeker',
-sut: 'tam yağlı süt',
-siviyag: 'ayçiçek yağı',
-yogurt: 'tam yağlı yoğurt',
-bal: 'bal (20°C)',
-tereyagi: 'tereyağı (oda sıcaklığı)',
-pirinc: 'pirinç',
-su: 'su (20°C)'
-};
-// Geçici malzeme listesi
-let currentIngredients = [];
-// Malzeme ekleme fonksiyonu
-function addIngredient() {
-const ingredient = recipeIngredientSelect.value;
-const amount = parseFloat(recipeAmountInput.value);
-const unit = recipeUnitSelect.value;
-if (isNaN(amount) || amount <= 0) {
-alert('Lütfen geçerli bir miktar girin');
-return;
-}
-// Standart birime dönüşümü hesapla (gram veya ml)
-const density = densityData[ingredient];
-let standardValue;
-let standardUnit;
-if (['un', 'seker', 'pirinc'].includes(ingredient)) {
-// Katı malzemeler için gram
-if (unit === 'gram') {
-standardValue = amount;
-} else {
-standardValue = (amount * unitConversions[unit]) * density;
-}
-standardUnit = 'gram';
-} else {
-// Sıvı malzemeler için ml
-if (unit === 'ml') {
-standardValue = amount;
-} else if (unit === 'gram') {
-standardValue = amount / density;
-} else {
-standardValue = amount * unitConversions[unit];
-}
-standardUnit = 'ml';
-}
-// Sonucu formatla (en fazla 2 ondalık basamak)
-standardValue = Math.round(standardValue * 100) / 100;
-// Malzemeyi listeye ekle
-const newIngredient = {
-id: Date.now(),
-name: ingredient,
-amount: amount,
-unit: unit,
-standardValue: standardValue,
-standardUnit: standardUnit
-};
-currentIngredients.push(newIngredient);
-// Malzeme listesini güncelle
-updateIngredientsList();
-// Form alanlarını temizle
-recipeAmountInput.value = '';
-recipeAmountInput.focus();
-}
-// Malzeme listesini güncelleme fonksiyonu
-function updateIngredientsList() {
-if (currentIngredients.length === 0) {
-ingredientsList.innerHTML = '<div class="text-gray-500 text-center py-4 animate-pulse">Henüz malzeme eklenmedi</div>';
-return;
-}
-ingredientsList.innerHTML = '';
-currentIngredients.forEach(item => {
-const ingredientEl = document.createElement('div');
-ingredientEl.className = 'recipe-item flex justify-between items-center p-3 bg-gray-50 border border-gray-200 rounded-lg';
-ingredientEl.innerHTML = `
-<div>
-<div class="font-medium">${ingredientNames[item.name]}</div>
-<div class="text-sm text-gray-600">
-${item.amount} ${unitNames[item.unit]}
-<span class="text-gray-500">(≈ ${item.standardValue} ${item.standardUnit})</span>
-</div>
-</div>
-<div class="flex space-x-2">
-<button class="secondary edit-btn p-2 rounded-full !rounded-full whitespace-nowrap">
-<div class="w-4 h-4 flex items-center justify-center">
-<i class="ri-pencil-line"></i>
-</div>
-</button>
-<button class="danger delete-btn p-2 rounded-full !rounded-full whitespace-nowrap">
-<div class="w-4 h-4 flex items-center justify-center">
-<i class="ri-delete-bin-line"></i>
-</div>
-</button>
-</div>
-`;
-// Silme butonu event listener'ı
-const deleteBtn = ingredientEl.querySelector('.delete-btn');
-deleteBtn.addEventListener('click', () => {
-currentIngredients = currentIngredients.filter(i => i.id !== item.id);
-updateIngredientsList();
-});
-// Düzenleme butonu event listener'ı
-const editBtn = ingredientEl.querySelector('.edit-btn');
-editBtn.addEventListener('click', () => {
-recipeIngredientSelect.value = item.name;
-recipeAmountInput.value = item.amount;
-recipeUnitSelect.value = item.unit;
-// Malzemeyi listeden kaldır
-currentIngredients = currentIngredients.filter(i => i.id !== item.id);
-updateIngredientsList();
-});
-ingredientsList.appendChild(ingredientEl);
-});
-}
-// Tarif kaydetme fonksiyonu
-function saveRecipe() {
-const name = recipeNameInput.value.trim();
-const description = recipeDescriptionInput.value.trim();
-if (name === '') {
-alert('Lütfen tarif adı girin');
-return;
-}
-if (currentIngredients.length === 0) {
-alert('Lütfen en az bir malzeme ekleyin');
-return;
-}
-// Yeni tarif oluştur
-const newRecipe = {
-id: Date.now(),
-name: name,
-description: description,
-ingredients: [...currentIngredients],
-date: new Date().toLocaleDateString('tr-TR')
-};
-// Mevcut tarifleri localStorage'dan al
-let savedRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
-// Yeni tarifi ekle
-savedRecipes.push(newRecipe);
-// localStorage'a kaydet
-localStorage.setItem('recipes', JSON.stringify(savedRecipes));
-// Tarif listesini güncelle
-loadSavedRecipes();
-// Formu temizle
-recipeNameInput.value = '';
-recipeDescriptionInput.value = '';
-currentIngredients = [];
-updateIngredientsList();
-alert('Tarif başarıyla kaydedildi!');
-}
-// Kaydedilmiş tarifleri yükleme fonksiyonu
-function loadSavedRecipes() {
-const savedRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
-if (savedRecipes.length === 0) {
-savedRecipesContainer.innerHTML = '<div class="text-gray-500 text-center py-8 animate-pulse">Henüz kaydedilmiş tarif bulunmuyor</div>';
-return;
-}
-savedRecipesContainer.innerHTML = '';
-savedRecipes.forEach(recipe => {
-const recipeCard = document.createElement('div');
-recipeCard.className = 'bg-gray-50 rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow';
-let ingredientsHtml = '';
-recipe.ingredients.forEach(ing => {
-ingredientsHtml += `
-<li class="text-sm">
-${ing.amount} ${unitNames[ing.unit]} ${ingredientNames[ing.name]}
-<span class="text-gray-500">(≈ ${ing.standardValue} ${ing.standardUnit})</span>
-</li>
-`;
-});
-recipeCard.innerHTML = `
-<div class="flex justify-between items-start mb-2">
-<h3 class="text-lg font-medium">${recipe.name}</h3>
-<button class="danger delete-recipe-btn p-1.5 rounded-full !rounded-full whitespace-nowrap">
-<div class="w-4 h-4 flex items-center justify-center">
-<i class="ri-delete-bin-line"></i>
-</div>
-</button>
-</div>
-<p class="text-gray-600 text-sm mb-3">${recipe.description || 'Açıklama yok'}</p>
-<div class="text-xs text-gray-500 mb-2">Eklenme: ${recipe.date}</div>
-<div class="border-t border-gray-200 pt-2 mt-2">
-<h4 class="text-sm font-medium mb-1">Malzemeler:</h4>
-<ul class="list-disc list-inside space-y-1">
-${ingredientsHtml}
-</ul>
-</div>
-`;
-// Tarif silme butonu event listener'ı
-const deleteBtn = recipeCard.querySelector('.delete-recipe-btn');
-deleteBtn.addEventListener('click', () => {
-if (confirm('Bu tarifi silmek istediğinizden emin misiniz?')) {
-const updatedRecipes = savedRecipes.filter(r => r.id !== recipe.id);
-localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
-loadSavedRecipes();
-}
-});
-savedRecipesContainer.appendChild(recipeCard);
-});
-}
-// Event listener'lar
-addIngredientBtn.addEventListener('click', addIngredient);
-saveRecipeBtn.addEventListener('click', saveRecipe);
-// Sayfa yüklendiğinde kaydedilmiş tarifleri yükle
-loadSavedRecipes();
+    const recipeNameInput = document.getElementById('recipeName');
+    const recipeDescriptionInput = document.getElementById('recipeDescription');
+    const recipeIngredientSelect = document.getElementById('recipeIngredient');
+    const recipeAmountInput = document.getElementById('recipeAmount');
+    const recipeUnitSelect = document.getElementById('recipeUnit');
+    const addIngredientBtn = document.getElementById('addIngredientBtn');
+    const ingredientsList = document.getElementById('ingredientsList');
+    const saveRecipeBtn = document.getElementById('saveRecipeBtn');
+    const savedRecipesContainer = document.getElementById('savedRecipes');
+
+    let currentIngredients = [];
+
+    function addIngredient() {
+        const ingredient = recipeIngredientSelect.value;
+        const amount = parseFloat(recipeAmountInput.value);
+        const unitKey = recipeUnitSelect.value;
+        const allUnits = getAllUnits();
+
+        if (isNaN(amount) || amount <= 0) {
+            alert('Lütfen geçerli bir miktar girin');
+            return;
+        }
+
+        const density = densityData[ingredient];
+        const unitData = allUnits[unitKey];
+        
+        // Standart (g/ml) değer hesaplama
+        let standardValue, standardUnit;
+        
+        // Eğer birim gram ise direkt al, değilse hacim üzerinden hesapla
+        if (unitKey === 'gram') {
+            standardValue = amount;
+            standardUnit = 'gram';
+        } else {
+            // Hacim birimi (ml, bardak, özel kap vs.)
+            const mlAmount = amount * unitData.ml;
+            
+            // Katı malzemeleri grama, sıvıları ml'ye çevirip gösterelim
+            if (['un', 'seker', 'pirinc'].includes(ingredient)) {
+                standardValue = mlAmount * density;
+                standardUnit = 'gram';
+            } else {
+                standardValue = mlAmount;
+                standardUnit = 'ml';
+            }
+        }
+
+        standardValue = Math.round(standardValue * 100) / 100;
+
+        const newIngredient = {
+            id: Date.now(),
+            name: ingredient,
+            amount: amount,
+            unit: unitKey,
+            unitLabel: unitData.label,
+            standardValue: standardValue,
+            standardUnit: standardUnit
+        };
+
+        currentIngredients.push(newIngredient);
+        updateIngredientsList();
+        recipeAmountInput.value = '';
+        recipeAmountInput.focus();
+    }
+
+    function updateIngredientsList() {
+        if (currentIngredients.length === 0) {
+            ingredientsList.innerHTML = '<div class="text-gray-500 text-center py-4 animate-pulse">Henüz malzeme eklenmedi</div>';
+            return;
+        }
+        ingredientsList.innerHTML = '';
+        currentIngredients.forEach(item => {
+            const ingredientEl = document.createElement('div');
+            ingredientEl.className = 'recipe-item flex justify-between items-center p-3 bg-gray-50 border border-gray-200 rounded-lg';
+            ingredientEl.innerHTML = `
+                <div>
+                    <div class="font-medium">${ingredientNames[item.name]}</div>
+                    <div class="text-sm text-gray-600">
+                        ${item.amount} ${item.unitLabel}
+                        <span class="text-gray-500">(≈ ${item.standardValue} ${item.standardUnit})</span>
+                    </div>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="danger delete-btn p-2 rounded-full !rounded-full whitespace-nowrap">
+                        <div class="w-4 h-4 flex items-center justify-center"><i class="ri-delete-bin-line"></i></div>
+                    </button>
+                </div>`;
+            
+            ingredientEl.querySelector('.delete-btn').addEventListener('click', () => {
+                currentIngredients = currentIngredients.filter(i => i.id !== item.id);
+                updateIngredientsList();
+            });
+            ingredientsList.appendChild(ingredientEl);
+        });
+    }
+
+    function saveRecipe() {
+        const name = recipeNameInput.value.trim();
+        const description = recipeDescriptionInput.value.trim();
+        if (!name) { alert('Lütfen tarif adı girin'); return; }
+        if (!currentIngredients.length) { alert('Lütfen en az bir malzeme ekleyin'); return; }
+
+        const newRecipe = {
+            id: Date.now(),
+            name: name,
+            description: description,
+            ingredients: [...currentIngredients],
+            date: new Date().toLocaleDateString('tr-TR')
+        };
+
+        let savedRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+        savedRecipes.push(newRecipe);
+        localStorage.setItem('recipes', JSON.stringify(savedRecipes));
+        
+        loadSavedRecipes();
+        recipeNameInput.value = '';
+        recipeDescriptionInput.value = '';
+        currentIngredients = [];
+        updateIngredientsList();
+        alert('Tarif başarıyla kaydedildi!');
+    }
+
+    function loadSavedRecipes() {
+        const savedRecipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+        if (!savedRecipes.length) {
+            savedRecipesContainer.innerHTML = '<div class="text-gray-500 text-center py-8 animate-pulse">Henüz kaydedilmiş tarif bulunmuyor</div>';
+            return;
+        }
+        savedRecipesContainer.innerHTML = '';
+        savedRecipes.forEach(recipe => {
+            const recipeCard = document.createElement('div');
+            recipeCard.className = 'bg-gray-50 rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow relative';
+            
+            let ingredientsHtml = '';
+            recipe.ingredients.forEach(ing => {
+                ingredientsHtml += `<li class="text-sm">${ing.amount} ${ing.unitLabel} ${ingredientNames[ing.name]}</li>`;
+            });
+
+            recipeCard.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg font-medium">${recipe.name}</h3>
+                    <button class="danger delete-recipe-btn p-1.5 rounded-full"><i class="ri-delete-bin-line"></i></button>
+                </div>
+                <p class="text-gray-600 text-sm mb-3">${recipe.description || ''}</p>
+                <div class="text-xs text-gray-500 mb-2">Eklenme: ${recipe.date}</div>
+                <div class="border-t border-gray-200 pt-2 mt-2">
+                    <h4 class="text-sm font-medium mb-1">Malzemeler:</h4>
+                    <ul class="list-disc list-inside space-y-1">${ingredientsHtml}</ul>
+                </div>`;
+
+            recipeCard.querySelector('.delete-recipe-btn').addEventListener('click', () => {
+                if (confirm('Silmek istediğine emin misin?')) {
+                    const updated = savedRecipes.filter(r => r.id !== recipe.id);
+                    localStorage.setItem('recipes', JSON.stringify(updated));
+                    loadSavedRecipes();
+                }
+            });
+            savedRecipesContainer.appendChild(recipeCard);
+        });
+    }
+
+    addIngredientBtn.addEventListener('click', addIngredient);
+    saveRecipeBtn.addEventListener('click', saveRecipe);
+    loadSavedRecipes();
 });
 </script>
+
 <script id="timerLogic">
 document.addEventListener('DOMContentLoaded', function() {
   const hoursInput = document.getElementById('hours');
@@ -765,14 +811,15 @@ document.addEventListener('DOMContentLoaded', function() {
     timerId = setInterval(() => {
       timeLeft--;
       updateDisplay(timeLeft);
-      
       if (timeLeft <= 0) {
         clearInterval(timerId);
         updateButtons(false);
-        const notification = new Notification('Zamanlayıcı', {
-          body: 'Süre doldu!',
-          icon: 'https://example.com/icon.png'
-        });
+        if(Notification.permission === 'granted') {
+             new Notification('Zamanlayıcı', { body: 'Süre doldu!' });
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission();
+        }
+        alert("Süre Doldu!");
       }
     }, 1000);
     updateButtons(true);
@@ -787,7 +834,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateDisplay(timeLeft);
     updateButtons(false);
   });
-  // Initial display
   updateDisplay(0);
   updateButtons(false);
 });
@@ -799,20 +845,14 @@ document.addEventListener('DOMContentLoaded', function() {
   celsiusInput.addEventListener('input', function() {
     const celsius = parseFloat(this.value);
     if (!isNaN(celsius)) {
-      const fahrenheit = (celsius * 9/5) + 32;
-      fahrenheitInput.value = Math.round(fahrenheit * 10) / 10;
-    } else {
-      fahrenheitInput.value = '';
-    }
+      fahrenheitInput.value = Math.round(((celsius * 9/5) + 32) * 10) / 10;
+    } else { fahrenheitInput.value = ''; }
   });
   fahrenheitInput.addEventListener('input', function() {
     const fahrenheit = parseFloat(this.value);
     if (!isNaN(fahrenheit)) {
-      const celsius = (fahrenheit - 32) * 5/9;
-      celsiusInput.value = Math.round(celsius * 10) / 10;
-    } else {
-      celsiusInput.value = '';
-    }
+      celsiusInput.value = Math.round(((fahrenheit - 32) * 5/9) * 10) / 10;
+    } else { celsiusInput.value = ''; }
   });
 });
 </script>
