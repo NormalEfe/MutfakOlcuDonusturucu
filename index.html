@@ -3,494 +3,686 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mutfak Asistanı Pro</title>
+<title>Mutfak Asistanı Pro v3</title>
 <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-<script>tailwind.config={theme:{extend:{colors:{primary:'#DF8820'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<script>tailwind.config={theme:{extend:{colors:{primary:'#DF8820', primaryLight: '#FFF4E5'},borderRadius:{DEFAULT:'12px','button':'10px'}}}}</script>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
 <style>
-:where([class^="ri-"])::before { content: "\f3c2"; }
-@keyframes scaleIn {
-from { transform: scale(0.95); opacity: 0; }
-to { transform: scale(1); opacity: 1; }
-}
-body {
-font-family: 'Inter', sans-serif;
-background-image: linear-gradient(to bottom right, rgba(223, 136, 32, 0.05), rgba(223, 136, 32, 0.02));
-}
-.card {
-backdrop-filter: blur(10px);
-background: rgba(255, 255, 255, 0.95);
-box-shadow: 0 4px 20px rgba(223, 136, 32, 0.08);
-border: 1px solid rgba(223, 136, 32, 0.15);
-animation: scaleIn 0.3s ease-out;
-position: relative;
-overflow: hidden;
-}
-.card::before {
-content: '';
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 4px;
-background: linear-gradient(90deg, #DF8820, rgba(223, 136, 32, 0.3));
-}
-.input-field {
-transition: all 0.3s ease;
-border: 2px solid transparent;
-background: rgba(255, 255, 255, 0.9);
-}
-.input-field:focus {
-outline: none;
-border-color: #DF8820;
-box-shadow: 0 0 0 3px rgba(223, 136, 32, 0.15);
-background: white;
-}
-.custom-select {
-appearance: none;
-background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-background-repeat: no-repeat;
-background-position: right 0.75rem center;
-background-size: 1rem;
-padding-right: 2.5rem;
-}
-button {
-transition: all 0.3s ease;
-}
-button.primary {
-background: linear-gradient(45deg, #DF8820, #E69635);
-color: white;
-}
-button.secondary {
-background: rgba(223, 136, 32, 0.1);
-color: #DF8820;
-}
-button.danger {
-background: rgba(239, 68, 68, 0.1);
-color: rgb(239, 68, 68);
-}
-/* Tablo görünümü için */
-.settings-row:nth-child(even) {
-    background-color: rgba(223, 136, 32, 0.03);
-}
+    body { font-family: 'Inter', sans-serif; background: #f8f9fa; background-image: radial-gradient(#DF8820 0.5px, transparent 0.5px), radial-gradient(#DF8820 0.5px, #f8f9fa 0.5px); background-size: 20px 20px; background-position: 0 0, 10px 10px; background-color: #fafafa; }
+    
+    /* Animasyonlar */
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Kart Tasarımı */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 10px 30px -10px rgba(223, 136, 32, 0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .glass-card:hover { transform: translateY(-2px); box-shadow: 0 15px 35px -10px rgba(223, 136, 32, 0.2); }
+
+    /* Input Alanları */
+    .modern-input {
+        background: white;
+        border: 1px solid #e5e7eb;
+        transition: all 0.2s;
+    }
+    .modern-input:focus { border-color: #DF8820; ring: 2px solid rgba(223, 136, 32, 0.2); outline: none; box-shadow: 0 0 0 3px rgba(223, 136, 32, 0.1); }
+
+    /* ÖZEL DROPDOWN (LISTBOX) TASARIMI */
+    .custom-select-container { position: relative; width: 100%; }
+    .select-trigger {
+        display: flex; align-items: center; justify-content: space-between;
+        background: white; border: 1px solid #e5e7eb; padding: 0.6rem 1rem;
+        border-radius: 10px; cursor: pointer; transition: all 0.2s; user-select: none;
+    }
+    .select-trigger:hover { border-color: #DF8820; }
+    .select-trigger.active { border-color: #DF8820; box-shadow: 0 0 0 3px rgba(223, 136, 32, 0.1); }
+    
+    .select-options {
+        position: absolute; top: 110%; left: 0; right: 0;
+        background: white; border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border: 1px solid #f3f4f6;
+        z-index: 50;
+        max-height: 250px; overflow-y: auto;
+        display: none;
+        animation: slideDown 0.2s ease-out;
+    }
+    .select-options.show { display: block; }
+    
+    .option-item {
+        padding: 0.75rem 1rem; cursor: pointer; transition: background 0.1s;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .option-item:hover { background-color: #FFF4E5; color: #DF8820; }
+    .option-item.selected { background-color: #FFF4E5; color: #DF8820; font-weight: 600; }
+    .option-group-title {
+        padding: 0.5rem 1rem; font-size: 0.75rem; color: #9ca3af; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; background: #f9fafb;
+    }
+    
+    /* Scrollbar */
+    .select-options::-webkit-scrollbar { width: 6px; }
+    .select-options::-webkit-scrollbar-track { background: transparent; }
+    .select-options::-webkit-scrollbar-thumb { background-color: #e5e7eb; border-radius: 20px; }
 </style>
 </head>
-<body class="bg-gray-50 text-gray-900 min-h-screen">
-<div class="container mx-auto px-4 py-8 max-w-6xl">
-<header class="flex justify-between items-center mb-8">
-<h1 class="text-3xl font-['Pacifico'] text-primary">Mutfak Asistanı</h1>
-</header>
+<body class="text-gray-800 pb-20">
 
-<main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-<section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card lg:col-span-2">
-    <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
-        <div>
-            <h2 class="text-2xl font-semibold flex items-center gap-2">
-                <i class="ri-settings-4-line text-primary"></i> Standart Ölçü Ayarları
-            </h2>
-            <p class="text-gray-500 text-sm mt-1">Evindeki bardak ve kaşıkların gerçek boyutlarını buraya gir, hesaplamalar buna göre yapılsın.</p>
+<div class="container mx-auto px-4 py-8 max-w-5xl">
+    <header class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white text-2xl shadow-lg shadow-orange-200">
+                <i class="ri-restaurant-2-fill"></i>
+            </div>
+            <h1 class="text-4xl font-['Pacifico'] text-gray-800">Mutfak Asistanı</h1>
         </div>
-        <button id="resetDefaultsBtn" class="text-sm text-red-500 hover:text-red-700 underline mt-2 md:mt-0">
-            Fabrika Ayarlarına Dön
-        </button>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="standardSettingsGrid">
+        <div class="flex gap-2">
+            <button onclick="document.getElementById('settingsSection').scrollIntoView({behavior: 'smooth'})" class="px-4 py-2 bg-white border border-gray-200 rounded-button text-sm font-medium hover:bg-gray-50 text-gray-600 transition-colors">
+                <i class="ri-settings-4-line align-middle mr-1"></i> Ayarlar
+            </button>
         </div>
-</section>
+    </header>
 
-<section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card lg:col-span-2 border-t-0">
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-semibold text-gray-700">Ekstra Özel Kaplar</h2>
-        <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Örn: "Babaannemin Tası"</span>
-    </div>
-    <div class="flex gap-2 mb-4">
-        <input type="text" id="customUnitName" class="input-field flex-1 px-4 py-2 border border-gray-300 rounded-button" placeholder="Kap Adı">
-        <input type="number" id="customUnitVolume" class="input-field w-32 px-4 py-2 border border-gray-300 rounded-button" placeholder="Hacim (ml)">
-        <button id="addCustomUnitBtn" class="primary px-4 py-2 rounded-button">Ekle</button>
-    </div>
-    <div id="customUnitsList" class="flex flex-wrap gap-3"></div>
-</section>
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <div class="lg:col-span-7 space-y-8">
+            
+            <section class="glass-card rounded-2xl p-6 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-yellow-400"></div>
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <i class="ri-exchange-dollar-line text-primary"></i> Hızlı Dönüştürücü
+                </h2>
 
-<section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
-<h2 class="text-2xl font-semibold mb-6">Birim Dönüştürücü</h2>
-<div class="space-y-4">
-<div>
-<label class="block text-sm font-medium mb-1">Malzeme</label>
-<select id="ingredient" class="input-field custom-select w-full px-4 py-2 border border-gray-300 rounded-button bg-white">
-<option value="un">Un</option>
-<option value="seker">Şeker</option>
-<option value="sut">Süt</option>
-<option value="siviyag">Sıvı Yağ</option>
-<option value="yogurt">Yoğurt</option>
-<option value="bal">Bal</option>
-<option value="tereyagi">Tereyağı</option>
-<option value="pirinc">Pirinç</option>
-<option value="su">Su</option>
-</select>
-</div>
-<div class="grid grid-cols-2 gap-4">
-<div>
-<label class="block text-sm font-medium mb-1">Miktar</label>
-<input type="number" id="amount" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button" placeholder="1">
-</div>
-<div>
-<label class="block text-sm font-medium mb-1">Kaynak</label>
-<select id="sourceUnit" class="input-field custom-select w-full px-4 py-2 border border-gray-300 rounded-button bg-white"></select>
-</div>
-</div>
-<div>
-<label class="block text-sm font-medium mb-1">Hedef</label>
-<select id="targetUnit" class="input-field custom-select w-full px-4 py-2 border border-gray-300 rounded-button bg-white"></select>
-</div>
-<div id="conversionResult" class="p-4 bg-gray-100 border border-gray-200 rounded-lg text-center font-bold text-lg text-primary mt-4">
-Sonuç Bekleniyor...
-</div>
-</div>
-</section>
+                <div class="space-y-5">
+                    <div class="z-30 relative">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1.5 ml-1">Malzeme</label>
+                        <div id="ingredientSelect" class="custom-select-container"></div>
+                        <input type="hidden" id="ingredientValue" value="un">
+                    </div>
 
-<section class="bg-white/95 backdrop-blur rounded-lg shadow-md p-6 card">
-<h2 class="text-2xl font-semibold mb-6">Tarif Yöneticisi</h2>
-<div class="space-y-4">
-<input type="text" id="recipeName" class="input-field w-full px-4 py-2 border border-gray-300 rounded-button" placeholder="Tarif Adı">
-<div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-<div class="grid grid-cols-1 gap-2">
-<select id="recipeIngredient" class="input-field custom-select w-full px-3 py-2 border border-gray-300 rounded-button bg-white">
-<option value="un">Un</option>
-<option value="seker">Şeker</option>
-<option value="sut">Süt</option>
-<option value="siviyag">Sıvı Yağ</option>
-<option value="yogurt">Yoğurt</option>
-<option value="bal">Bal</option>
-<option value="tereyagi">Tereyağı</option>
-<option value="pirinc">Pirinç</option>
-<option value="su">Su</option>
-</select>
-<div class="flex gap-2">
-<input type="number" id="recipeAmount" class="input-field w-24 px-3 py-2 border border-gray-300 rounded-button" placeholder="Miktar">
-<select id="recipeUnit" class="input-field custom-select flex-1 px-3 py-2 border border-gray-300 rounded-button bg-white"></select>
-</div>
-<button id="addIngredientBtn" class="secondary w-full py-2 rounded-button mt-2">Listeye Ekle</button>
-</div>
-</div>
-<div id="ingredientsList" class="space-y-2 max-h-40 overflow-y-auto min-h-[50px]"></div>
-<button id="saveRecipeBtn" class="primary w-full py-3 rounded-button">Tarifi Kaydet</button>
-</div>
-</section>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-1.5 ml-1">Miktar</label>
+                            <input type="number" id="amount" class="modern-input w-full px-4 py-2.5 rounded-button font-medium" placeholder="Örn: 1" value="1">
+                        </div>
+                        <div class="z-20 relative">
+                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-1.5 ml-1">Kaynak Birim</label>
+                            <div id="sourceUnitSelect" class="custom-select-container"></div>
+                            <input type="hidden" id="sourceUnitValue" value="subardagi">
+                        </div>
+                    </div>
 
-</main>
+                    <div class="z-10 relative">
+                        <label class="block text-xs font-semibold text-gray-500 uppercase mb-1.5 ml-1">Hedef Birim</label>
+                        <div id="targetUnitSelect" class="custom-select-container"></div>
+                        <input type="hidden" id="targetUnitValue" value="gram">
+                    </div>
 
-<div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="savedRecipes"></div>
+                    <div class="mt-4 p-5 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl border border-gray-200 text-center relative overflow-hidden group">
+                        <div class="absolute top-0 left-0 w-full h-full bg-white opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                        <div id="conversionResult" class="relative z-10">
+                            <span class="text-gray-400 text-sm">Sonuç için değer girin...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
+            <section class="glass-card rounded-2xl p-6 relative">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <i class="ri-book-open-line text-blue-500"></i> Tarif Oluşturucu
+                </h2>
+
+                <div class="space-y-4">
+                    <input type="text" id="recipeName" class="modern-input w-full px-4 py-3 rounded-button text-lg font-medium" placeholder="Tarif Adı (Örn: Anne Keki)">
+                    <textarea id="recipeDesc" class="modern-input w-full px-4 py-3 rounded-button text-sm resize-none h-20" placeholder="Kısa bir açıklama veya not..."></textarea>
+
+                    <div class="bg-gray-50/80 p-4 rounded-xl border border-gray-200">
+                        <h3 class="text-sm font-semibold text-gray-600 mb-3">Malzeme Ekle</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                            <div class="z-20 relative">
+                                <div id="recipeIngredientSelect" class="custom-select-container"></div>
+                                <input type="hidden" id="recipeIngredientValue" value="un">
+                            </div>
+                            <div class="flex gap-2">
+                                <input type="number" id="recipeAmount" class="modern-input w-24 px-3 py-2 rounded-button" placeholder="Miktar">
+                                <div class="z-20 relative flex-1">
+                                    <div id="recipeUnitSelect" class="custom-select-container"></div>
+                                    <input type="hidden" id="recipeUnitValue" value="subardagi">
+                                </div>
+                            </div>
+                        </div>
+                        <button id="addIngredientBtn" class="w-full py-2.5 bg-white border border-gray-300 hover:border-blue-400 hover:text-blue-500 text-gray-600 rounded-button font-medium transition-all flex items-center justify-center gap-2 shadow-sm">
+                            <i class="ri-add-circle-line"></i> Listeye Ekle
+                        </button>
+                    </div>
+
+                    <div id="currentRecipeList" class="space-y-2 min-h-[60px] max-h-[200px] overflow-y-auto pr-1">
+                        <div class="text-center text-gray-400 text-sm py-4 italic">Henüz malzeme eklenmedi</div>
+                    </div>
+
+                    <button id="saveRecipeBtn" class="w-full py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-button font-bold shadow-lg shadow-blue-200 transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                        <i class="ri-save-3-line"></i> Tarifi Kaydet
+                    </button>
+                </div>
+            </section>
+        </div>
+
+        <div class="lg:col-span-5 space-y-8">
+            
+            <section id="settingsSection" class="glass-card rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <i class="ri-settings-3-fill text-gray-700"></i> Standart Ayarları
+                    </h2>
+                    <button id="resetDefaultsBtn" class="text-xs text-red-500 hover:text-red-700 font-medium underline">
+                        Sıfırla
+                    </button>
+                </div>
+                
+                <p class="text-sm text-gray-500 mb-4">Mutfak gereçlerinin gerçek boyutlarını buraya gir.</p>
+
+                <div id="standardSettingsList" class="space-y-3 mb-8">
+                    </div>
+
+                <div class="border-t border-gray-200 my-6"></div>
+
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-primary">
+                    <i class="ri-cup-line"></i> Özel Kaplarım
+                </h3>
+                
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="customUnitName" class="modern-input flex-1 px-3 py-2 rounded-button text-sm" placeholder="Örn: Mavi Kupa">
+                    <input type="number" id="customUnitVolume" class="modern-input w-20 px-3 py-2 rounded-button text-sm" placeholder="ml">
+                    <button id="addCustomUnitBtn" class="bg-primary text-white w-10 h-10 rounded-button flex items-center justify-center hover:bg-orange-600 transition-colors shadow-lg shadow-orange-200">
+                        <i class="ri-add-line text-xl"></i>
+                    </button>
+                </div>
+
+                <div id="customUnitsTags" class="flex flex-wrap gap-2">
+                    </div>
+            </section>
+
+            <section class="space-y-4">
+                <h2 class="text-xl font-bold pl-1 text-gray-700">Tarif Defterim</h2>
+                <div id="savedRecipesList" class="grid grid-cols-1 gap-4">
+                    </div>
+            </section>
+
+        </div>
+    </main>
 </div>
 
 <script>
-// --- VERİ YAPILARI ---
+/**
+ * VERİ & YAPILANDIRMA
+ */
 const densityData = {
-    un: 0.593, seker: 0.845, sut: 1.033, siviyag: 0.918,
-    yogurt: 1.045, bal: 1.425, tereyagi: 0.911, pirinc: 0.873, su: 0.998
+    un: { val: 0.593, label: "Un" },
+    seker: { val: 0.845, label: "Şeker" },
+    sut: { val: 1.033, label: "Süt" },
+    siviyag: { val: 0.918, label: "Sıvı Yağ" },
+    yogurt: { val: 1.045, label: "Yoğurt" },
+    bal: { val: 1.425, label: "Bal" },
+    tereyagi: { val: 0.911, label: "Tereyağı" },
+    pirinc: { val: 0.873, label: "Pirinç" },
+    su: { val: 0.998, label: "Su" },
+    kakao: { val: 0.55, label: "Kakao" }
 };
 
-const ingredientNames = {
-    un: 'un', seker: 'şeker', sut: 'süt', siviyag: 'sıvı yağ',
-    yogurt: 'yoğurt', bal: 'bal', tereyagi: 'tereyağı', pirinc: 'pirinç', su: 'su'
-};
-
-// Sistem Varsayılanları (Sabit)
 const defaultStandardUnits = {
-    gram: { ml: 1, label: 'Gram', frozen: true },
-    ml: { ml: 1, label: 'Mililitre', frozen: true },
-    subardagi: { ml: 200, label: 'Su Bardağı' },
-    cay: { ml: 100, label: 'Çay Bardağı' },
-    yemek: { ml: 15, label: 'Yemek Kaşığı' },
-    tatli: { ml: 10, label: 'Tatlı Kaşığı' },
-    cay_kasigi: { ml: 5, label: 'Çay Kaşığı' },
-    fincan: { ml: 70, label: 'Kahve Fincanı' }
+    gram: { ml: 1, label: 'Gram', frozen: true, icon: 'ri-scales-fill' },
+    ml: { ml: 1, label: 'Mililitre', frozen: true, icon: 'ri-drop-fill' },
+    subardagi: { ml: 200, label: 'Su Bardağı', icon: 'ri-cup-fill' },
+    cay: { ml: 100, label: 'Çay Bardağı', icon: 'ri-cup-line' },
+    yemek: { ml: 15, label: 'Yemek Kaşığı', icon: 'ri-restaurant-fill' },
+    tatli: { ml: 10, label: 'Tatlı Kaşığı', icon: 'ri-restaurant-2-line' },
+    cay_kasigi: { ml: 5, label: 'Çay Kaşığı', icon: 'ri-spoon-fill' },
+    fincan: { ml: 70, label: 'Kahve Fincanı', icon: 'ri-cup-fill' }
 };
 
-// --- YARDIMCI FONKSİYONLAR ---
+let currentIngredients = []; // Tarif oluştururken geçici liste
 
-// Tüm birimleri (Varsayılan + Düzenlenmiş + Özel) getirir
-function getEffectiveUnits() {
-    // 1. Kullanıcının değiştirdiği standart ayarları al
+/**
+ * CORE FONKSİYONLAR
+ */
+
+// Tüm birimleri (Standart + User Override + Custom) getir
+function getUnits() {
     const overrides = JSON.parse(localStorage.getItem('unitOverrides') || '{}');
+    const customs = JSON.parse(localStorage.getItem('customUnits') || '{}');
     
-    // 2. Varsayılanlarla birleştir (Override varsa onu kullan)
-    let effectiveStandards = {};
-    for (let key in defaultStandardUnits) {
-        if (defaultStandardUnits[key].frozen) {
-            effectiveStandards[key] = defaultStandardUnits[key];
+    let finals = {};
+    
+    // Standartları işle
+    for(let key in defaultStandardUnits) {
+        const def = defaultStandardUnits[key];
+        finals[key] = {
+            ...def,
+            ml: def.frozen ? def.ml : (overrides[key] || def.ml)
+        };
+    }
+    
+    // Customları ekle
+    for(let key in customs) {
+        finals[key] = {
+            label: customs[key].label,
+            ml: customs[key].ml,
+            icon: 'ri-star-smile-fill',
+            isCustom: true
+        };
+    }
+    return finals;
+}
+
+/**
+ * UI BİLEŞENLERİ: CUSTOM DROPDOWN
+ */
+function renderCustomSelect(containerId, options, valueInputId, onChangeCallback) {
+    const container = document.getElementById(containerId);
+    const hiddenInput = document.getElementById(valueInputId);
+    if(!container || !hiddenInput) return;
+
+    const currentVal = hiddenInput.value;
+    // Seçili opsiyonu bul (yoksa ilkini al)
+    let selectedOpt = options.find(o => o.value === currentVal) || options[0]; // Gruplu yapıda flatten gerekebilir ama basit tutalım
+    
+    // Basit bir "Flatten" işlemi (Gruplu seçenekler için)
+    let allOptionsFlat = [];
+    options.forEach(opt => {
+        if(opt.group) {
+            allOptionsFlat = [...allOptionsFlat, ...opt.items];
         } else {
-            // Eğer override varsa hacmi ordan al, yoksa defaulttan al
-            const volume = overrides[key] ? overrides[key] : defaultStandardUnits[key].ml;
-            effectiveStandards[key] = {
-                ml: parseFloat(volume),
-                label: defaultStandardUnits[key].label // İsim değişmez
-            };
+            allOptionsFlat.push(opt);
         }
-    }
+    });
+    selectedOpt = allOptionsFlat.find(o => o.value === currentVal) || allOptionsFlat[0];
 
-    // 3. Tamamen yeni eklenen "Özel Kapları" al
-    const customUnits = JSON.parse(localStorage.getItem('customUnits') || '{}');
-
-    return { ...effectiveStandards, ...customUnits };
-}
-
-// Select kutularını doldur
-function populateDropdowns() {
-    const units = getEffectiveUnits();
-    const selects = ['sourceUnit', 'targetUnit', 'recipeUnit'];
-    
-    selects.forEach(id => {
-        const select = document.getElementById(id);
-        if(!select) return;
-        const currentVal = select.value;
-        select.innerHTML = '';
-
-        // Standartlar
-        Object.keys(defaultStandardUnits).forEach(key => {
-            const u = units[key];
-            const option = document.createElement('option');
-            option.value = key;
-            // Etikette güncel hacmi göster
-            if(u.frozen) option.textContent = u.label;
-            else option.textContent = `${u.label} (${u.ml}ml)`;
-            select.appendChild(option);
-        });
-
-        // Özel Kaplar
-        const customKeys = Object.keys(JSON.parse(localStorage.getItem('customUnits') || '{}'));
-        if(customKeys.length > 0) {
-            const grp = document.createElement('optgroup');
-            grp.label = "Özel Kaplarınız";
-            customKeys.forEach(key => {
-                const u = units[key];
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.textContent = `${u.label} (${u.ml}ml)`;
-                grp.appendChild(opt);
+    // HTML Oluştur
+    let listHtml = '';
+    options.forEach(opt => {
+        if(opt.group) {
+            listHtml += `<div class="option-group-title">${opt.title}</div>`;
+            opt.items.forEach(item => {
+                listHtml += buildOptionItem(item, currentVal);
             });
-            select.appendChild(grp);
+        } else {
+            listHtml += buildOptionItem(opt, currentVal);
         }
-
-        if(currentVal && units[currentVal]) select.value = currentVal;
-        else select.value = 'subardagi';
-    });
-}
-
-// Ayarlar panelini çiz
-function renderSettingsPanel() {
-    const container = document.getElementById('standardSettingsGrid');
-    container.innerHTML = '';
-    
-    const units = getEffectiveUnits();
-
-    Object.keys(defaultStandardUnits).forEach(key => {
-        if(defaultStandardUnits[key].frozen) return; // Gram ve ml düzenlenemez
-
-        const u = units[key]; // Şu an geçerli olan değer
-        
-        const div = document.createElement('div');
-        div.className = 'flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-lg settings-row';
-        div.innerHTML = `
-            <div class="flex items-center gap-3">
-                <div class="bg-white p-2 rounded-full text-primary shadow-sm">
-                    <i class="ri-scales-3-line"></i>
-                </div>
-                <span class="font-medium text-gray-700">${u.label}</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <input type="number" value="${u.ml}" min="1" step="0.1" 
-                    class="std-unit-input w-20 px-2 py-1 text-right border border-gray-300 rounded focus:border-primary outline-none"
-                    data-key="${key}">
-                <span class="text-xs text-gray-500 font-medium w-6">ml</span>
-            </div>
-        `;
-        container.appendChild(div);
     });
 
-    // Input değişimlerini dinle
-    document.querySelectorAll('.std-unit-input').forEach(input => {
-        input.addEventListener('change', (e) => {
-            const key = e.target.dataset.key;
-            const newVal = parseFloat(e.target.value);
+    container.innerHTML = `
+        <div class="select-trigger" onclick="toggleSelect('${containerId}')">
+            <span class="flex items-center gap-2 font-medium text-gray-700">
+                ${selectedOpt.icon ? `<i class="${selectedOpt.icon} text-primary"></i>` : ''}
+                ${selectedOpt.label}
+                ${selectedOpt.sub ? `<span class="text-xs text-gray-400">(${selectedOpt.sub})</span>` : ''}
+            </span>
+            <i class="ri-arrow-down-s-line text-gray-400"></i>
+        </div>
+        <div class="select-options" id="${containerId}-list">
+            ${listHtml}
+        </div>
+    `;
+
+    // Click eventlerini ata (Global function kullanımı yerine event delegation daha iyi ama basitlik için inline onclick kullanacağız, window'a expose edelim)
+    container.querySelectorAll('.option-item').forEach(el => {
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const val = el.dataset.value;
+            hiddenInput.value = val;
             
-            if(newVal > 0) {
-                // Ayarları kaydet
-                const overrides = JSON.parse(localStorage.getItem('unitOverrides') || '{}');
-                overrides[key] = newVal;
-                localStorage.setItem('unitOverrides', JSON.stringify(overrides));
-                
-                // Her şeyi güncelle
-                populateDropdowns();
-                renderCustomUnitsList(); // Belki etkilemez ama temiz olsun
-                calculateConversion();
-                
-                // Görsel geri bildirim
-                e.target.style.borderColor = '#22c55e';
-                setTimeout(() => e.target.style.borderColor = '#d1d5db', 1000);
-            }
+            // UI Güncelle
+            renderCustomSelect(containerId, options, valueInputId, onChangeCallback);
+            
+            // Listeyi kapat
+            document.getElementById(`${containerId}-list`).classList.remove('show');
+            document.querySelector(`#${containerId} .select-trigger`).classList.remove('active');
+
+            if(onChangeCallback) onChangeCallback();
         });
     });
 }
 
-// Özel Kap Listesini Çiz
-function renderCustomUnitsList() {
-    const list = document.getElementById('customUnitsList');
-    const customUnits = JSON.parse(localStorage.getItem('customUnits') || '{}');
-    list.innerHTML = '';
-    
-    Object.entries(customUnits).forEach(([key, val]) => {
-        const tag = document.createElement('div');
-        tag.className = 'flex items-center gap-2 bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm border border-orange-200';
-        tag.innerHTML = `
-            <span>${val.label}: <b>${val.ml}ml</b></span>
-            <button onclick="removeCustomUnit('${key}')" class="hover:text-red-600"><i class="ri-close-circle-fill"></i></button>
-        `;
-        list.appendChild(tag);
-    });
-}
-
-// --- DÖNÜŞÜM MANTIĞI ---
-function calculateConversion() {
-    const units = getEffectiveUnits();
-    const amount = parseFloat(document.getElementById('amount').value);
-    const fromUnitKey = document.getElementById('sourceUnit').value;
-    const toUnitKey = document.getElementById('targetUnit').value;
-    const ingredient = document.getElementById('ingredient').value;
-    
-    if(!amount || !fromUnitKey || !toUnitKey) return;
-
-    const fromUnit = units[fromUnitKey];
-    const toUnit = units[toUnitKey];
-    const density = densityData[ingredient];
-
-    // Her şeyi grama çevir (Ara birim)
-    let gramValue = 0;
-
-    // 1. Kaynağı ml'ye çevir
-    let mlValue = amount * fromUnit.ml; 
-    
-    // 2. Yoğunluk hesabı (Sadece gram/ml geçişlerinde önemli)
-    // Eğer kaynak 'gram' ise: mlValue aslında gramdır, yoğunluğa bölüp ml buluruz
-    if (fromUnitKey === 'gram') {
-        mlValue = amount / density;
-    }
-
-    // 3. Hedefe çevir
-    let result = 0;
-    if (toUnitKey === 'gram') {
-        result = mlValue * density;
-    } else {
-        result = mlValue / toUnit.ml;
-    }
-    
-    // Sonuç yazdır
-    const displayRes = document.getElementById('conversionResult');
-    displayRes.innerHTML = `
-        <div class="text-gray-500 text-sm font-normal">
-            ${amount} ${fromUnit.label} ${ingredientNames[ingredient]}
-        </div>
-        <div class="text-3xl mt-1 text-primary">
-            = ${result.toFixed(2)} <span class="text-xl text-gray-600">${toUnit.label}</span>
+function buildOptionItem(item, currentVal) {
+    const isSelected = item.value === currentVal;
+    return `
+        <div class="option-item ${isSelected ? 'selected' : ''}" data-value="${item.value}">
+            <span class="flex items-center gap-2">
+                ${item.icon ? `<i class="${item.icon}"></i>` : ''}
+                ${item.label}
+            </span>
+            ${item.sub ? `<span class="text-xs text-gray-400">${item.sub}</span>` : ''}
         </div>
     `;
 }
 
-// --- ANA İŞLEMLER ---
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Başlangıç Yüklemeleri
-    renderSettingsPanel();
-    renderCustomUnitsList();
-    populateDropdowns();
-    
-    // Event Listeners: Dönüştürücü
-    ['ingredient', 'amount', 'sourceUnit', 'targetUnit'].forEach(id => {
-        document.getElementById(id).addEventListener('input', calculateConversion);
+// Dropdown Toggle Logic
+window.toggleSelect = function(id) {
+    // Diğer açık olanları kapat
+    document.querySelectorAll('.select-options').forEach(el => {
+        if(el.id !== `${id}-list`) el.classList.remove('show');
     });
+    document.querySelectorAll('.select-trigger').forEach(el => el.classList.remove('active'));
 
-    // Event Listeners: Standart Ayarları Sıfırla
-    document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
-        if(confirm('Tüm standart ölçü ayarlarınız (bardak boyutları vb.) varsayılan değerlere dönecek. Emin misiniz?')) {
-            localStorage.removeItem('unitOverrides');
-            renderSettingsPanel();
-            populateDropdowns();
-            calculateConversion();
-        }
-    });
+    const list = document.getElementById(`${id}-list`);
+    const trigger = document.querySelector(`#${id} .select-trigger`);
+    list.classList.toggle('show');
+    trigger.classList.toggle('active');
+};
 
-    // Event Listeners: Özel Kap Ekleme
-    document.getElementById('addCustomUnitBtn').addEventListener('click', () => {
-        const name = document.getElementById('customUnitName').value;
-        const vol = parseFloat(document.getElementById('customUnitVolume').value);
-        if(name && vol > 0) {
-            const customUnits = JSON.parse(localStorage.getItem('customUnits') || '{}');
-            customUnits['cust_' + Date.now()] = { label: name, ml: vol };
-            localStorage.setItem('customUnits', JSON.stringify(customUnits));
-            
-            document.getElementById('customUnitName').value = '';
-            document.getElementById('customUnitVolume').value = '';
-            renderCustomUnitsList();
-            populateDropdowns();
-        }
-    });
-
-    // Event Listeners: Tarif Kaydetme (Basitleştirilmiş)
-    const currentRecipeIngs = [];
-    document.getElementById('addIngredientBtn').addEventListener('click', () => {
-        const ing = document.getElementById('recipeIngredient').value;
-        const amt = document.getElementById('recipeAmount').value;
-        const uKey = document.getElementById('recipeUnit').value;
-        if(!amt) return;
-
-        const units = getEffectiveUnits();
-        const u = units[uKey];
-        
-        // Listeye Ekle
-        const li = document.createElement('div');
-        li.className = 'flex justify-between bg-gray-50 p-2 text-sm rounded border border-gray-200';
-        li.innerHTML = `<span>${amt} ${u.label} ${ingredientNames[ing]}</span> <span class="text-gray-400">(${u.ml * amt}ml hacim)</span>`;
-        document.getElementById('ingredientsList').appendChild(li);
-
-        currentRecipeIngs.push({ ing, amt, uKey });
-        document.getElementById('recipeAmount').value = '';
-    });
-
-    document.getElementById('saveRecipeBtn').addEventListener('click', () => {
-        const name = document.getElementById('recipeName').value;
-        if(!name || currentRecipeIngs.length === 0) { alert('İsim ve malzeme girin'); return; }
-        
-        // Basitçe ekrana kart olarak ekle (LocalStorage kısmı önceki kodda vardı, burayı sade tuttum görüntü için)
-        const card = document.createElement('div');
-        card.className = 'bg-white p-4 rounded shadow border border-gray-100';
-        let html = `<h3 class="font-bold text-lg text-primary">${name}</h3><ul class="text-sm mt-2 space-y-1">`;
-        currentRecipeIngs.forEach(i => {
-            const units = getEffectiveUnits(); // Kayıt anındaki birim değerini al
-            html += `<li>• ${i.amt} ${units[i.uKey].label} ${ingredientNames[i.ing]}</li>`;
-        });
-        html += '</ul>';
-        document.getElementById('savedRecipes').appendChild(card);
-        
-        // Temizle
-        document.getElementById('recipeName').value = '';
-        document.getElementById('ingredientsList').innerHTML = '';
-        currentRecipeIngs.length = 0;
-    });
+// Dışarı tıklandığında kapat
+document.addEventListener('click', (e) => {
+    if(!e.target.closest('.custom-select-container')) {
+        document.querySelectorAll('.select-options').classList.remove('show'); // Hata vermemesi için loop lazım
+        document.querySelectorAll('.select-options').forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('.select-trigger').forEach(el => el.classList.remove('active'));
+    }
 });
 
-// Global scope fonksiyonu (HTML'den çağrılabilmesi için)
-window.removeCustomUnit = function(key) {
-    const customUnits = JSON.parse(localStorage.getItem('customUnits') || '{}');
-    delete customUnits[key];
-    localStorage.setItem('customUnits', JSON.stringify(customUnits));
-    renderCustomUnitsList();
-    populateDropdowns();
+/**
+ * UYGULAMA LOGIC
+ */
+
+function initApp() {
+    refreshAllDropdowns();
+    renderSettings();
+    renderCustomUnitsTags();
+    loadSavedRecipes();
+    calculateConversion(); // İlk açılış hesabı
+}
+
+// Dropdown Verilerini Hazırla ve Render Et
+function refreshAllDropdowns() {
+    const units = getUnits();
+    
+    // 1. Malzeme Listesi
+    const ingredientOptions = Object.entries(densityData).map(([key, data]) => ({
+        value: key, label: data.label, icon: 'ri-seedling-fill'
+    }));
+
+    // 2. Birim Listesi (Gruplu)
+    let standardOps = [];
+    let customOps = [];
+
+    Object.entries(units).forEach(([key, u]) => {
+        const item = { value: key, label: u.label, sub: u.ml + 'ml', icon: u.icon };
+        if(u.isCustom) customOps.push(item);
+        else standardOps.push(item);
+    });
+
+    const unitOptions = [
+        { group: true, title: 'Standart Birimler', items: standardOps },
+        ...(customOps.length ? [{ group: true, title: 'Özel Kaplarınız', items: customOps }] : [])
+    ];
+
+    // Render Calls
+    renderCustomSelect('ingredientSelect', ingredientOptions, 'ingredientValue', calculateConversion);
+    renderCustomSelect('sourceUnitSelect', unitOptions, 'sourceUnitValue', calculateConversion);
+    renderCustomSelect('targetUnitSelect', unitOptions, 'targetUnitValue', calculateConversion);
+    
+    renderCustomSelect('recipeIngredientSelect', ingredientOptions, 'recipeIngredientValue', null);
+    renderCustomSelect('recipeUnitSelect', unitOptions, 'recipeUnitValue', null);
+}
+
+// Hesaplama
+function calculateConversion() {
+    const units = getUnits();
+    const amount = parseFloat(document.getElementById('amount').value) || 0;
+    const ingKey = document.getElementById('ingredientValue').value;
+    const srcKey = document.getElementById('sourceUnitValue').value;
+    const tgtKey = document.getElementById('targetUnitValue').value;
+
+    const density = densityData[ingKey].val;
+    const srcUnit = units[srcKey];
+    const tgtUnit = units[tgtKey];
+
+    if(!srcUnit || !tgtUnit) return;
+
+    let result = 0;
+    
+    // Logic: Amount * SrcML -> Gram -> Target
+    // 1. Convert source to ML
+    let mlAmount = amount * srcUnit.ml;
+    
+    // Özel Durum: Kaynak 'Gram' ise mlAmount aslında gramdır.
+    // Bizim ana birimimiz ML olduğu için gramı ml'ye çevirmeliyiz (Volume = Mass / Density)
+    if(srcKey === 'gram') mlAmount = amount / density;
+
+    // 2. Convert ML to Target
+    if(tgtKey === 'gram') {
+        // ML * Density = Gram
+        result = mlAmount * density;
+    } else {
+        // ML / TargetVolume = TargetAmount
+        result = mlAmount / tgtUnit.ml;
+    }
+
+    const resDiv = document.getElementById('conversionResult');
+    resDiv.innerHTML = `
+        <div class="text-3xl font-bold text-gray-800">${parseFloat(result.toFixed(2))}</div>
+        <div class="text-primary font-medium">${tgtUnit.label}</div>
+        <div class="text-xs text-gray-400 mt-1">(${amount} ${srcUnit.label} ${densityData[ingKey].label})</div>
+    `;
+}
+
+// Ayarlar Paneli Render
+function renderSettings() {
+    const list = document.getElementById('standardSettingsList');
+    const units = getUnits();
+    list.innerHTML = '';
+
+    Object.keys(defaultStandardUnits).forEach(key => {
+        if(defaultStandardUnits[key].frozen) return;
+        const u = units[key];
+        
+        list.innerHTML += `
+            <div class="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl hover:shadow-sm transition-shadow">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center">
+                        <i class="${u.icon}"></i>
+                    </div>
+                    <span class="font-medium text-gray-700">${u.label}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <input type="number" value="${u.ml}" min="1" step="0.1" 
+                        onchange="updateUnitSetting('${key}', this.value)"
+                        class="modern-input w-20 px-2 py-1 text-right text-sm font-semibold rounded-md">
+                    <span class="text-xs text-gray-400 w-4">ml</span>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function updateUnitSetting(key, val) {
+    const overrides = JSON.parse(localStorage.getItem('unitOverrides') || '{}');
+    overrides[key] = parseFloat(val);
+    localStorage.setItem('unitOverrides', JSON.stringify(overrides));
+    initApp(); // Her şeyi yenile
+}
+
+document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
+    if(confirm('Fabrika ayarlarına dönmek istediğine emin misin?')) {
+        localStorage.removeItem('unitOverrides');
+        initApp();
+    }
+});
+
+// Özel Kap İşlemleri
+document.getElementById('addCustomUnitBtn').addEventListener('click', () => {
+    const name = document.getElementById('customUnitName').value;
+    const vol = parseFloat(document.getElementById('customUnitVolume').value);
+    
+    if(name && vol > 0) {
+        const customs = JSON.parse(localStorage.getItem('customUnits') || '{}');
+        const id = 'cust_' + Date.now();
+        customs[id] = { label: name, ml: vol };
+        localStorage.setItem('customUnits', JSON.stringify(customs));
+        
+        document.getElementById('customUnitName').value = '';
+        document.getElementById('customUnitVolume').value = '';
+        initApp();
+    }
+});
+
+function renderCustomUnitsTags() {
+    const container = document.getElementById('customUnitsTags');
+    const customs = JSON.parse(localStorage.getItem('customUnits') || '{}');
+    container.innerHTML = '';
+    
+    Object.entries(customs).forEach(([key, data]) => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-2 bg-orange-100 text-orange-800 px-3 py-1.5 rounded-lg text-sm border border-orange-200';
+        div.innerHTML = `
+            <i class="ri-cup-line"></i>
+            <span class="font-medium">${data.label}</span>
+            <span class="opacity-60 text-xs">(${data.ml}ml)</span>
+            <button onclick="deleteCustomUnit('${key}')" class="ml-1 hover:text-red-600 transition-colors"><i class="ri-close-fill"></i></button>
+        `;
+        container.appendChild(div);
+    });
+}
+
+window.deleteCustomUnit = function(key) {
+    const customs = JSON.parse(localStorage.getItem('customUnits') || '{}');
+    delete customs[key];
+    localStorage.setItem('customUnits', JSON.stringify(customs));
+    initApp();
 };
+
+/**
+ * TARİF YÖNETİCİSİ LOGIC
+ */
+document.getElementById('addIngredientBtn').addEventListener('click', () => {
+    const ingKey = document.getElementById('recipeIngredientValue').value;
+    const unitKey = document.getElementById('recipeUnitValue').value;
+    const amount = parseFloat(document.getElementById('recipeAmount').value);
+    
+    if(!amount) return;
+
+    const units = getUnits();
+    const unit = units[unitKey];
+    
+    currentIngredients.push({
+        id: Date.now(),
+        ingKey,
+        unitKey,
+        unitLabel: unit.label,
+        amount,
+        ingLabel: densityData[ingKey].label
+    });
+
+    renderRecipeIngredients();
+    document.getElementById('recipeAmount').value = '';
+});
+
+function renderRecipeIngredients() {
+    const list = document.getElementById('currentRecipeList');
+    if(currentIngredients.length === 0) {
+        list.innerHTML = '<div class="text-center text-gray-400 text-sm py-4 italic">Henüz malzeme eklenmedi</div>';
+        return;
+    }
+    list.innerHTML = '';
+    currentIngredients.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between p-2 bg-white border border-gray-100 rounded-lg shadow-sm';
+        div.innerHTML = `
+            <span class="text-sm"><span class="font-bold text-primary">${item.amount} ${item.unitLabel}</span> ${item.ingLabel}</span>
+            <button onclick="removeRecipeItem(${item.id})" class="text-gray-400 hover:text-red-500"><i class="ri-delete-bin-line"></i></button>
+        `;
+        list.appendChild(div);
+    });
+}
+
+window.removeRecipeItem = function(id) {
+    currentIngredients = currentIngredients.filter(i => i.id !== id);
+    renderRecipeIngredients();
+}
+
+document.getElementById('saveRecipeBtn').addEventListener('click', () => {
+    const name = document.getElementById('recipeName').value;
+    const desc = document.getElementById('recipeDesc').value;
+    
+    if(!name || currentIngredients.length === 0) {
+        alert('Lütfen tarif adı ve en az bir malzeme ekleyin.');
+        return;
+    }
+
+    const recipe = {
+        id: Date.now(),
+        name, desc,
+        ingredients: [...currentIngredients],
+        date: new Date().toLocaleDateString('tr-TR')
+    };
+
+    const saved = JSON.parse(localStorage.getItem('recipes') || '[]');
+    saved.push(recipe);
+    localStorage.setItem('recipes', JSON.stringify(saved));
+
+    // Reset Form
+    document.getElementById('recipeName').value = '';
+    document.getElementById('recipeDesc').value = '';
+    currentIngredients = [];
+    renderRecipeIngredients();
+    
+    loadSavedRecipes();
+});
+
+function loadSavedRecipes() {
+    const container = document.getElementById('savedRecipesList');
+    const recipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+    
+    container.innerHTML = '';
+    if(recipes.length === 0) {
+        container.innerHTML = '<div class="text-gray-400 text-center py-10">Henüz kaydedilmiş tarif yok.</div>';
+        return;
+    }
+
+    recipes.reverse().forEach(r => {
+        let ingHtml = '';
+        r.ingredients.forEach(i => {
+            ingHtml += `<li class="text-sm text-gray-600 flex items-center gap-2"><i class="ri-checkbox-blank-circle-fill text-[6px] text-primary"></i> ${i.amount} ${i.unitLabel} ${i.ingLabel}</li>`;
+        });
+
+        const card = document.createElement('div');
+        card.className = 'bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all group';
+        card.innerHTML = `
+            <div class="flex justify-between items-start mb-2">
+                <div>
+                    <h3 class="font-bold text-lg text-gray-800 group-hover:text-primary transition-colors">${r.name}</h3>
+                    <div class="text-xs text-gray-400">${r.date}</div>
+                </div>
+                <button onclick="deleteRecipe(${r.id})" class="text-gray-300 hover:text-red-500 transition-colors p-1"><i class="ri-delete-bin-line text-lg"></i></button>
+            </div>
+            ${r.desc ? `<p class="text-sm text-gray-500 mb-4 bg-gray-50 p-2 rounded-lg italic">${r.desc}</p>` : ''}
+            <div class="border-t border-gray-100 pt-3">
+                <ul class="space-y-1">${ingHtml}</ul>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+window.deleteRecipe = function(id) {
+    if(confirm('Bu tarifi silmek istiyor musunuz?')) {
+        let recipes = JSON.parse(localStorage.getItem('recipes') || '[]');
+        recipes = recipes.filter(r => r.id !== id);
+        localStorage.setItem('recipes', JSON.stringify(recipes));
+        loadSavedRecipes();
+    }
+}
+
+// Event Listeners for Live Calculation
+document.getElementById('amount').addEventListener('input', calculateConversion);
+
+// Start
+initApp();
 
 </script>
 </body>
