@@ -10,6 +10,14 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
 <style>
     body { font-family: 'Inter', sans-serif; background: #f8f9fa; background-image: radial-gradient(#DF8820 0.5px, transparent 0.5px), radial-gradient(#DF8820 0.5px, #f8f9fa 0.5px); background-size: 20px 20px; background-position: 0 0, 10px 10px; background-color: #fafafa; }
+
+    .yazi, .no-select {
+        user-select: none;
+        -webkit-user-select: none; /* Safari için */
+        -moz-user-select: none;    /* Firefox için */
+        -ms-user-select: none;     /* IE/Edge için */
+    }
+
     
     /* Animasyonlar */
     @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -24,11 +32,6 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .glass-card:hover { transform: translateY(-2px); box-shadow: 0 15px 35px -10px rgba(223, 136, 32, 0.2); }
-
-    /* Highlightlanmaması için*/
-    .yazi {
-      user-select: none;
-    }
 
 
     /* Input Alanları */
